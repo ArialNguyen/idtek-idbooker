@@ -1,0 +1,18 @@
+{
+    "header": {
+        "language": {
+            "buttonChange": "Ngôn ngữ",
+            "code": {
+                "vi": "Việt Nam",
+                "en": "English"
+            }
+        },
+        "notifications": "Thông báo",
+        "unSignIn": {
+            "button": {
+                "signIN": "Đăng nhập",
+                "signUp": "Đăng kí"
+            }
+        }
+    }
+}

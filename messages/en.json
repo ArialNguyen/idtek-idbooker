@@ -1,0 +1,23 @@
+{
+    "header": {
+        "language": {
+            "buttonChange": "Switch language",
+            "code": {
+                "vi": "English",
+                "en": "VietNam"
+            }
+        },
+        "notifications": "notifications",
+        "unSignIn": {
+            "button": {
+                "signIN": "Sign in",
+                "signUp": "Register"
+            }
+        },
+        "modal": {
+            "login": {
+                "tittle": "Login"
+            }
+        }
+    }
+}
