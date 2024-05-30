@@ -1,41 +1,33 @@
 'use client'
 import NavLink from '@/components/custom/NavLink'
-import Dropdown from '@/components/ui/Dropdown'
 import { Button } from '@/components/ui/button'
-import { Link, usePathname } from '@/navigation'
-import { FaSearch } from 'react-icons/fa'
+import { Link } from '@/navigation'
 
-import React from 'react'
-import {
-  FaGear,
-  FaHeart,
-  FaSuitcase,
-  FaListCheck,
-  FaFile,
-  FaStar,
-  FaClipboard,
-} from 'react-icons/fa6'
-import type { IconType } from 'react-icons'
+import React, { useTransition } from 'react'
 import { useTranslations } from 'next-intl'
 import LanguageSelector from '@/components/custom/LanguageSelector'
 import AuthRightControls from '@/components/custom/AuthRightControls'
 import { useSession } from 'next-auth/react'
 import Modal from '@/components/custom/modal/Modal'
 import useModal from '@/hooks/useModal'
-import LoginForm from '@/app/(auth)/signIn/LoginForm'
+import LoginForm from '@/components/auth/LoginForm'
+import RegisterForm from '@/components/auth/ResgisterForm'
+import { logoutAction } from '@/actions/auth'
 
 type Props = {}
 
 export default function Header({ }: Props) {
   const t = useTranslations()
-  const { modal, openModal, closeModal } = useModal()
 
   const session = useSession()
   const user = session.data?.user
+  const [isPending, startTrasition] = useTransition()
 
 
   const handleLogout = () => {
-
+    startTrasition(async () => {
+      await logoutAction()
+    })
   }
 
   return (
@@ -46,7 +38,7 @@ export default function Header({ }: Props) {
         </NavLink>
 
       </div>
-      <div className="flex items-end gap-2 sm:gap-4">
+      <div className="flex justify-center items-center gap-2 sm:gap-4">
         <LanguageSelector />
         {user ? (
           <AuthRightControls t={t} logout={handleLogout} auth={user} />
@@ -54,7 +46,7 @@ export default function Header({ }: Props) {
           <NoAuthRightControls t={t} />
         )}
       </div>
-      
+
     </header>
   )
 }
@@ -64,7 +56,6 @@ function NoAuthRightControls({
 }: {
   t: any
 }): JSX.Element {
-  let callBackUrl = usePathname()
 
   const { modal, openModal, closeModal } = useModal()
   return (
@@ -77,7 +68,7 @@ function NoAuthRightControls({
         {t('header.unSignIn.button.signIN')}
       </Button>
       <Link href="/signup">
-        <Button>
+        <Button onClick={() => openModal('signup-modal')}>
           {t('header.unSignIn.button.signUp')}
         </Button>
       </Link>
@@ -85,11 +76,45 @@ function NoAuthRightControls({
         id="login-modal"
         show={modal === 'login-modal'}
         onClose={closeModal}
-        // size="xl"
+      // size="xl"
       >
         {/* <Modal.Header>{t('header.modal.login.tittle')}</Modal.Header> */}
         <Modal.Body >
           <LoginForm closeModal={closeModal} />
+          <Button variant="link"
+            className='font-normal w-full hover:cursor-auto mt-2'
+            size="sm"
+            asChild
+            onClick={() => {
+              closeModal()
+              openModal("signup-modal")
+            }}
+          >
+            <p>Or register new account Signup</p>
+          </Button>
+        </Modal.Body>
+    
+      </Modal>
+      <Modal
+        id="signup-modal"
+        show={modal === 'signup-modal'}
+        onClose={closeModal}
+        size="2xl"
+      >
+        {/* <Modal.Header>{t('header.modal.login.tittle')}</Modal.Header> */}
+        <Modal.Body >
+          <RegisterForm closeModal={closeModal} />
+          <Button variant="link"
+            className='font-normal w-full mt-2'
+            size="sm"
+            asChild
+            onClick={() => {
+              closeModal()
+              openModal("login-modal")
+            }}
+          >
+            <p>Already have an account?</p>
+          </Button>
         </Modal.Body>
       </Modal>
     </>

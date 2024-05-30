@@ -12,7 +12,22 @@ yarn dev
 pnpm dev
 # or
 bun dev
+
 ```
+## Prisma - MongdoDB
+
+``` bash 
+# Push all information to mongodb
+npx prisma db push 
+
+# Generate 
+npx prisma generate
+
+# Pull and automatically to create model for each entity pulled
+npx prisma pull
+
+```
+
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 

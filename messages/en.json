@@ -14,9 +14,25 @@
                 "signUp": "Register"
             }
         },
-        "modal": {
-            "login": {
-                "tittle": "Login"
+        
+        "jobSeeker": {
+            "user": {
+                "dropdown": {
+                    "history": "History",
+                    "logout": "Sign Out"
+                }
+            },
+            "modal": {
+                "login": {
+                    "tittle": "Login"
+                },
+                "logout": {
+                    "button": {
+                        "cancel": "Cancel",
+                        "logout": "Sign Out"
+                    },
+                    "title": "Do you want to logout?"
+                }
             }
         }
     }

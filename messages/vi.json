@@ -13,6 +13,26 @@
                 "signIN": "Đăng nhập",
                 "signUp": "Đăng kí"
             }
+        },
+        "jobSeeker": {
+            "user": {
+                "dropdown": {
+                    "history": "Lịch sử lịch hẹn",
+                    "logout": "Đăng xuất"
+                }
+            },
+            "modal": {
+                "login": {
+                    "tittle": "Đăng nhập"
+                },
+                "logout": {
+                    "button": {
+                        "cancel": "Hủy",
+                        "logout": "Đăng xuất"
+                    },
+                    "title": "Bạn muốn đăng xuất?"
+                }
+            }
         }
     }
 }

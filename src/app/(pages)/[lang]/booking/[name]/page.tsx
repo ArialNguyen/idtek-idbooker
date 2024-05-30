@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -11,8 +12,10 @@ export const metadata: Metadata = {
 };
 
 
-export default function page({}: BookingPageProps) {
+export default async function page({}: BookingPageProps) {
+  const session = await auth()
+
   return (
-    <div className='h-screen'>page</div>
+    <div className='h-screen'>{JSON.stringify(session)}</div>
   )
 }

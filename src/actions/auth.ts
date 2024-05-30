@@ -1,8 +1,12 @@
-import { signIn } from "@/auth";
+'use server'
+import { signIn, signOut } from "@/auth";
+import { db } from "@/lib/db";
 import { DEFAULT_LOGIN_REDIRECT } from "@/routes";
+import { RegisterSchema } from "@/schemas";
 import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
+import bcrypt from "bcryptjs"
 
 export const LoginAction = async (values: z.infer<typeof LoginSchema>, callbackUrl?: string | null) => {
 
@@ -33,4 +37,36 @@ export const LoginAction = async (values: z.infer<typeof LoginSchema>, callbackU
         throw error
     }
     
+}
+
+
+export const RegisterAction = async (values: z.infer<typeof RegisterSchema>) => {
+
+    const validatedField = RegisterSchema.safeParse(values)
+
+    if (!validatedField.success) {
+        return { error: "Invalid Credentials." }
+    }
+
+    const { email, password, phone, name, role} = validatedField.data
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    const existUser = await db.user.findUnique({
+    where: {
+            email
+        }
+    })
+    if (existUser) return {error: "Email already in use!"}
+    
+    await db.user.create({
+        data: {
+            email, password: hashedPassword, phone, name, role
+        }
+    })
+    // Send Verification token email
+    return {success: "User created!"}
+}
+
+export const logoutAction = async () => {
+    await signOut()
 }

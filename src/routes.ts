@@ -16,9 +16,6 @@ export const publicRoutes = [
 export const authRoutes = [
     "/signin",
     "/signup",
-    "/account/verify",
-    "/recruiter/signin",
-    "/recruiter/signup",
 ]
 
 /**

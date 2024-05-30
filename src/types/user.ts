@@ -13,7 +13,8 @@ export interface UserSessionType {
   name: string,
   id: string,
   email: string,
-  phone: string
+  phone: string,
+  image: string | null
 }
 
 
@@ -24,6 +25,7 @@ export interface JWTSessionType {
     id: string,
     email: string,
     phone: string
+    image: string
   },
   accessToken: string,
   refreshToken: string
