@@ -18,7 +18,6 @@ import { Button } from '@/components/ui/button'
 import FormSuccess from '@/components/custom/form-sucess'
 import FormError from '@/components/custom/form-error'
 import { RegisterAction } from '@/actions/auth'
-import Head from '@/components/custom/auth/Head'
 
 export default function RegisterForm({ closeModal }: { closeModal: () => void }) {
     const [isPending, startTrasition] = useTransition()
@@ -46,7 +45,6 @@ export default function RegisterForm({ closeModal }: { closeModal: () => void })
 
     return (
         <div>
-            <Head label={"SignUp"} />
             <Form {...form}>
                 <form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
                     <FormField control={form.control}

@@ -14,24 +14,26 @@
                 "signUp": "Đăng kí"
             }
         },
-        "jobSeeker": {
-            "user": {
-                "dropdown": {
-                    "history": "Lịch sử lịch hẹn",
-                    "logout": "Đăng xuất"
-                }
+        "user": {
+            "dropdown": {
+                "history": "Lịch sử lịch hẹn",
+                "logout": "Đăng xuất"
+            }
+        },
+        "modal": {
+            "header": {
+                "login": "Đăng nhập",
+                "register": "Đăng ký"
             },
-            "modal": {
-                "login": {
-                    "tittle": "Đăng nhập"
+            "login": {
+                "title": "Đăng xuất"
+            },
+            "logout": {
+                "button": {
+                    "cancel": "Hủy",
+                    "logout": "Đăng xuất"
                 },
-                "logout": {
-                    "button": {
-                        "cancel": "Hủy",
-                        "logout": "Đăng xuất"
-                    },
-                    "title": "Bạn muốn đăng xuất?"
-                }
+                "title": "Bạn muốn đăng xuất?"
             }
         }
     }

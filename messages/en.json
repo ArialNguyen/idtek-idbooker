@@ -3,8 +3,8 @@
         "language": {
             "buttonChange": "Switch language",
             "code": {
-                "vi": "English",
-                "en": "VietNam"
+                "vi": "VietNam",
+                "en": "English"
             }
         },
         "notifications": "notifications",
@@ -14,25 +14,26 @@
                 "signUp": "Register"
             }
         },
-        
-        "jobSeeker": {
-            "user": {
-                "dropdown": {
-                    "history": "History",
-                    "logout": "Sign Out"
-                }
+        "user": {
+            "dropdown": {
+                "history": "History",
+                "logout": "Sign Out"
+            }
+        },
+        "modal": {
+            "header": {
+                "login": "Login",
+                "register": "Register"
             },
-            "modal": {
-                "login": {
-                    "tittle": "Login"
+            "login": {
+                "title": "Login"
+            },
+            "logout": {
+                "button": {
+                    "cancel": "Cancel",
+                    "logout": "Sign Out"
                 },
-                "logout": {
-                    "button": {
-                        "cancel": "Cancel",
-                        "logout": "Sign Out"
-                    },
-                    "title": "Do you want to logout?"
-                }
+                "title": "Do you want to logout?"
             }
         }
     }

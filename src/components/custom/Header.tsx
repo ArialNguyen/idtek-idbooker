@@ -13,6 +13,7 @@ import useModal from '@/hooks/useModal'
 import LoginForm from '@/components/auth/LoginForm'
 import RegisterForm from '@/components/auth/ResgisterForm'
 import { logoutAction } from '@/actions/auth'
+import { usePathname } from '@/navigation'
 
 type Props = {}
 
@@ -23,10 +24,11 @@ export default function Header({ }: Props) {
   const user = session.data?.user
   const [isPending, startTrasition] = useTransition()
 
-
+  const pathname = usePathname()
   const handleLogout = () => {
     startTrasition(async () => {
       await logoutAction()
+      window.location.href = pathname
     })
   }
 
@@ -78,8 +80,8 @@ function NoAuthRightControls({
         onClose={closeModal}
       // size="xl"
       >
-        {/* <Modal.Header>{t('header.modal.login.tittle')}</Modal.Header> */}
-        <Modal.Body >
+        <Modal.Header className='text-center'>Login</Modal.Header>
+        <Modal.Body > 
           <LoginForm closeModal={closeModal} />
           <Button variant="link"
             className='font-normal w-full hover:cursor-auto mt-2'
@@ -101,7 +103,7 @@ function NoAuthRightControls({
         onClose={closeModal}
         size="2xl"
       >
-        {/* <Modal.Header>{t('header.modal.login.tittle')}</Modal.Header> */}
+        <Modal.Header>{t('header.modal.header.register')}</Modal.Header>
         <Modal.Body >
           <RegisterForm closeModal={closeModal} />
           <Button variant="link"

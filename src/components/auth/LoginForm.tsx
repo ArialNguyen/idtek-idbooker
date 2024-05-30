@@ -18,11 +18,8 @@ import { Button } from '@/components/ui/button'
 import FormSuccess from '@/components/custom/form-sucess'
 import FormError from '@/components/custom/form-error'
 import { useSearchParams } from 'next/navigation'
-import CardWrapper from '@/components/custom/auth/CardWrapper'
 import { LoginAction } from '@/actions/auth'
-import Head from '@/components/custom/auth/Head'
 import Social from '@/components/custom/auth/Social'
-import { Link } from '@/navigation'
 
 export default function LoginForm({ closeModal }: { closeModal: () => void }) {
   // Get params in url
@@ -54,7 +51,6 @@ export default function LoginForm({ closeModal }: { closeModal: () => void }) {
 
   return (
     <div>
-      <Head label={"Login"} />
       <Form {...form}>
         <form className='space-y-6' onSubmit={form.handleSubmit(onSubmit)}>
           <FormField control={form.control}

@@ -47,7 +47,7 @@ export default function AuthRightControls({
                         </NavLink>
                     </TooltipTrigger>
                     <TooltipContent>
-                        <p>{t('header.jobSeeker.notifications')}</p>
+                        <p>{t('header.notifications')}</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
@@ -67,7 +67,7 @@ export default function AuthRightControls({
                 </Dropdown.Header>
                 <Dropdown.Divider />
                 <Dropdown.Item to="/profile/dashboard" icon={FaRegUser as IconType}>
-                    {t('header.jobSeeker.user.dropdown.history')}
+                    {t('header.user.dropdown.history')}
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item icon={FaArrowRightFromBracket as IconType}>
@@ -75,7 +75,7 @@ export default function AuthRightControls({
                         className="w-full cursor-pointer"
                         onClick={() => openModal('logout-modal')}
                     >
-                        {t('header.jobSeeker.user.dropdown.logout')}
+                        {t('header.user.dropdown.logout')}
                     </div>{' '}
                 </Dropdown.Item>
             </Dropdown>
@@ -93,17 +93,17 @@ export default function AuthRightControls({
                     <div className="text-center">
                         <BsBoxArrowRight className="mx-auto mb-4 text-gray-400 h-14 w-14 dark:text-gray-200" />
                         <h3 className="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-                            {t('header.jobSeeker.modal.logout.title')}
+                            {t('header.modal.logout.title')}
                         </h3>
                         <div className="flex justify-center gap-4">
                             <Button onClick={() => {
                                 logout()
                                 closeModal()
                             }}>
-                                {t('header.jobSeeker.modal.logout.button.logout')}
+                                {t('header.modal.logout.button.logout')}
                             </Button>
                             <Button variant="red" onClick={closeModal}>
-                                {t('header.jobSeeker.modal.logout.button.cancel')}
+                                {t('header.modal.logout.button.cancel')}
                             </Button>
                         </div>
                     </div>
