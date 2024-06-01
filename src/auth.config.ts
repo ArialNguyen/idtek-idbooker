@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import { getUserByEmail } from "@/data/user";
 import UserType from "@/types/user";
 import { NextAuthConfig } from "next-auth";
@@ -23,18 +24,20 @@ export default {
             password: {},
           },
           authorize: async (credentials) => {
-            let user = null
             // logic to verify if user exists
             const {email, password} = credentials
             
-            user = await getUserByEmail(email as string) as UserType
+            let user = await getUserByEmail(email as string) as UserType
 
-            if (user){
+            if (!user || !user.password) return null
+
+            const passwordsMatch = await bcrypt.compare(password as string, user.password)
+            if (passwordsMatch){
               return {...user, accessToken: "", refreshToken: ""}
             }
 
             // return user object with the their profile data
-            return user
+            return null
           },
         }),
          

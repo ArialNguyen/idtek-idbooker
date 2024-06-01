@@ -1,4 +1,62 @@
 {
+    "signin": {
+        "user": {
+            "title": "Welcome back!",
+            "introduction": "Log in to continue using our services",
+            "intended": "For new User"
+        },
+        "inputs": {
+            "email": {
+                "label": "Email: ",
+                "placeholder": "Enter your email"
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter your password"
+            }
+        },
+        "buttons": {
+            "submit": "Log in",
+            "submiting": "Processing...",
+            "signup": "Register Now"
+        },
+        "signup": {
+            "label": "Don't have an account yet?"
+        }
+    },
+    "signup": {
+        "user": {
+            "title": "Register an account to find a job that suits you.",
+            "intended": "For job seekers"
+        },
+        "inputs": {
+            "name": {
+                "label": "Name",
+                "placeholder": "Enter Name"
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "Enter Placeholder"
+            },
+            "phone": {
+                "label": "Phone",
+                "placeholder": "Enter Phone"
+            },
+            "password": {
+                "label": "Password",
+                "placeholder": "Enter Password"
+            },
+            "confirmPassword": {
+                "label": "Confirm Password",
+                "placeholder": "Enter Password"
+            }
+        },
+        "buttons": {
+            "submit": "Submit",
+            "signin": "Log in now"
+        },
+        "signin": "Do you already have an account?"
+    },
     "header": {
         "language": {
             "buttonChange": "Switch language",
@@ -35,6 +93,19 @@
                 },
                 "title": "Do you want to logout?"
             }
+        }
+    },
+    "sidebar": {
+        "user": {
+            "dashboard": "Dashboard",
+            "task": "My Tasks",
+            "project": "Projects",
+            "calendar": "Calendar",
+            "feed": "Feed",
+            "message": "Messages",
+            "goals": "Goals",
+            "members": "Members",
+            "settings": "Settings"
         }
     }
 }

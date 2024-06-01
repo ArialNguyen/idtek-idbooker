@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
+import '@/app/globals.css';
 import { NextIntlClientProvider } from 'next-intl';
 import { ReduxProvider } from "@/context/ReduxProvider";
 import SessionsProvider from "@/context/SessionProvider";
@@ -8,7 +8,6 @@ import { auth } from "@/auth";
 import { getMessages } from "next-intl/server";
 import Header from "@/components/custom/Header";
 import { Toaster } from "sonner";
-import Footer from "@/components/custom/Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -30,12 +29,8 @@ export default async function RootLayout({
       <ReduxProvider>
         <SessionsProvider session={session}>
           <NextIntlClientProvider messages={messages} locale={params.lang}>
-
             <body className={inter.className}>
-              <Header />
               {children}
-              {/* @ts-expect-error Async Server Component */}
-              <Footer/>
             </body>
             <Toaster />
           </NextIntlClientProvider>
@@ -44,3 +39,6 @@ export default async function RootLayout({
     </html>
   );
 }
+
+// {/* @ts-expect-error Async Server Component */}
+// <Footer/>

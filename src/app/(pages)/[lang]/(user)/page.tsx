@@ -1,6 +1,6 @@
 
-import { auth, signOut } from '@/auth';
-import { Button } from '@/components/ui/button';
+import HomePage from '@/app/(pages)/[lang]/(user)/home';
+import { auth } from '@/auth';
 import { Metadata } from 'next';
 import React from 'react'
 
@@ -18,8 +18,6 @@ export default async function page({ }: BookingPageProps) {
     const session = await auth()
 
     return (
-        <div>
-            <div className='pt-20 h-screen'>DATA: {JSON.stringify(session)}</div>
-        </div>
+        <HomePage/>
     )
 }

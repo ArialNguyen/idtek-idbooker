@@ -3,10 +3,7 @@
  * These route not required authentication
  * @type {string[]}
  */
-export const publicRoutes = [
-    "/",
-    "/booking/**"
-]
+export const publicRoutes = []
 
 /**
  * An array of routes that are used for authentication

@@ -12,7 +12,7 @@ import Modal from '@/components/custom/modal/Modal'
 import useModal from '@/hooks/useModal'
 import LoginForm from '@/components/auth/LoginForm'
 import RegisterForm from '@/components/auth/ResgisterForm'
-import { logoutAction } from '@/actions/auth'
+import { logoutAction } from '@/actions/authActions'
 import { usePathname } from '@/navigation'
 
 type Props = {}
@@ -81,7 +81,7 @@ function NoAuthRightControls({
       // size="xl"
       >
         <Modal.Header className='text-center'>Login</Modal.Header>
-        <Modal.Body > 
+        <Modal.Body >
           <LoginForm closeModal={closeModal} />
           <Button variant="link"
             className='font-normal w-full hover:cursor-auto mt-2'
@@ -95,7 +95,7 @@ function NoAuthRightControls({
             <p>Or register new account Signup</p>
           </Button>
         </Modal.Body>
-    
+
       </Modal>
       <Modal
         id="signup-modal"

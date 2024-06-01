@@ -1,4 +1,62 @@
 {
+    "signin": {
+        "user": {
+            "title": "Chào mừng bạn quay trở lại",
+            "introduction": "Đăng nhập để tiếp tục sử dụng dịch vụ của chúng tôi",
+            "intended": "Dành cho người dùng"
+        },
+        "inputs": {
+            "email": {
+                "label": "Email",
+                "placeholder": "Nhập email của bạn"
+            },
+            "password": {
+                "label": "Mật khẩu",
+                "placeholder": "Nhập mật khẩu của bạn"
+            }
+        },
+        "buttons": {
+            "submit": "Đăng nhập",
+            "submiting": "Đang xử lý...",
+            "signup": "Đăng ký ngay"
+        },
+        "signup": {
+            "label": "Bạn chưa có tài khoản?"
+        }
+    },
+    "signup": {
+        "user": {
+            "title": "Đăng kí tài khoản để tìm công việc phù hợp với bạn",
+            "intended": "Dành cho ứng viên"
+        },
+        "inputs": {
+            "name": {
+                "label": "Họ và tên",
+                "placeholder": "Nhập họ và tên của bạn"
+            },
+            "email": {
+                "label": "Email",
+                "placeholder": "Nhập email của bạn"
+            },
+            "phone": {
+                "label": "Phone",
+                "placeholder": "Nhập số điện thoại của bạn"
+            },
+            "password": {
+                "label": "Mật khẩu",
+                "placeholder": "Nhập mật khẩu của bạn"
+            },
+            "confirmPassword": {
+                "label": "Nhập lại mật khẩu",
+                "placeholder": "Nhập lại mật khẩu của bạn"
+            }
+        },
+        "buttons": {
+            "submit": "Đăng ký",
+            "signin": "Đăng nhập ngay"
+        },
+        "signin": "Bạn đã có tài khoản?"
+    },
     "header": {
         "language": {
             "buttonChange": "Ngôn ngữ",
@@ -35,6 +93,19 @@
                 },
                 "title": "Bạn muốn đăng xuất?"
             }
+        }
+    },
+    "sidebar": {
+        "user": {
+            "dashboard": "Trang chủ",
+            "task": "Nhiệm vụ",
+            "project": "Dự án",
+            "calendar": "Lịch trình",
+            "feed": "Bảng tin",
+            "message": "Tin nhắn",
+            "goals": "Mục tiêu",
+            "members": "Thành viên",
+            "settings": "Cài đặt"
         }
     }
 }

@@ -17,7 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import FormSuccess from '@/components/custom/form-sucess'
 import FormError from '@/components/custom/form-error'
-import { RegisterAction } from '@/actions/auth'
+import { RegisterAction } from '@/actions/authActions'
 
 export default function RegisterForm({ closeModal }: { closeModal: () => void }) {
     const [isPending, startTrasition] = useTransition()
@@ -36,7 +36,8 @@ export default function RegisterForm({ closeModal }: { closeModal: () => void })
         setError("")
         setSuccess("")
         startTrasition(() => {
-            RegisterAction(values).then(value => {4
+            RegisterAction(values).then(value => {
+                4
                 setError(value.error)
                 setSuccess(value.success)
             })

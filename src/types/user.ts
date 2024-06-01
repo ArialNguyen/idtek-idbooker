@@ -5,7 +5,8 @@ export default interface UserType {
   name: string,
   id: string,
   email: string,
-  phone: string
+  phone: string,
+  password: string
 }
 
 export interface UserSessionType {

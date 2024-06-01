@@ -7,6 +7,7 @@ import { LoginSchema } from "@/schemas";
 import { AuthError } from "next-auth";
 import { z } from "zod";
 import bcrypt from "bcryptjs"
+import { getUserByEmail } from "@/data/user";
 
 export const LoginAction = async (values: z.infer<typeof LoginSchema>, callbackUrl?: string | null) => {
 
@@ -16,13 +17,15 @@ export const LoginAction = async (values: z.infer<typeof LoginSchema>, callbackU
         return { error: "Invalid Credentials." }
     }
 
+    const user = await getUserByEmail(validatedField.data.email)
+
     const { email, password } = validatedField.data
 
     try {
         await signIn("credentials", {
             email, password, redirectTo: callbackUrl ||
-             DEFAULT_LOGIN_REDIRECT
-        })
+             DEFAULT_LOGIN_REDIRECT, redirect: false
+        })  
         // console.log(user);
         return { success: "Login successfully" }
     } catch (error) {
@@ -38,7 +41,6 @@ export const LoginAction = async (values: z.infer<typeof LoginSchema>, callbackU
     }
     
 }
-
 
 export const RegisterAction = async (values: z.infer<typeof RegisterSchema>) => {
 
@@ -68,5 +70,5 @@ export const RegisterAction = async (values: z.infer<typeof RegisterSchema>) => 
 }
 
 export const logoutAction = async () => {
-    await signOut()
+    await signOut({ redirect: false })
 }
