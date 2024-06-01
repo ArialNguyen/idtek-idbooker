@@ -16,8 +16,5 @@ export const metadata: Metadata = {
 
 export default async function page({ }: BookingPageProps) {
     const session = await auth()
-
-    return (
-        <HomePage/>
-    )
+    return <HomePage/>
 }

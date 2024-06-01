@@ -8,9 +8,6 @@ import {
     FaPenToSquare,
     FaRegBell,
     FaSliders,
-    FaUserCheck,
-    FaUserTie,
-    FaUsersViewfinder,
 } from 'react-icons/fa6'
 import { IconType } from "react-icons";
 import Sidebar from '@/components/custom/sidebar/Sidebar';
@@ -22,7 +19,7 @@ type Props = {}
 export default function UserSidebar({ }: Props) {
     const t = useTranslations()
     return (
-        <Sidebar>
+        <Sidebar> 
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
                     <Sidebar.Item to="#" end icon={FaPalette as IconType} number={undefined}>

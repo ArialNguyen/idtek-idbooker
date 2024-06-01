@@ -2,6 +2,16 @@ import '@/app/globals.css';
 import { headers } from 'next/headers';
 import { Inter } from 'next/font/google';
 import AuthenticateLayout from '@/components/custom/layout/AuthenticateLayout';
+import { Toaster } from 'sonner';
+import '@/app/globals.css';
+import { NextIntlClientProvider } from 'next-intl';
+import { ReduxProvider } from "@/context/ReduxProvider";
+import SessionsProvider from "@/context/SessionProvider";
+import { auth } from "@/auth";
+import { getMessages } from "next-intl/server";
+import Header from "@/components/custom/header/Header";
+import { MdTask } from "react-icons/md";
+import UserSidebar from "@/components/custom/sidebar/user-sidebar";
 
 type LayoutSize = 'xs' | 'sm' | 'md' | 'lg'
 
@@ -28,6 +38,7 @@ const SignUpLayout = {
     layoutSize: 'sm',
     verify: false
 }
+const inter = Inter({ subsets: ["latin"] });
 
 export default async function RootLayout({ children, params }: Props) {
 
@@ -36,16 +47,30 @@ export default async function RootLayout({ children, params }: Props) {
     const { welcome, introduction, intendedFor, padding, backgroundImage, layoutSize } =
         (pathname!!.includes("signin")) ? SignInLayout : SignUpLayout
 
+    const session = await auth()
+    const messages = await getMessages()
     return (
-        <AuthenticateLayout
-            welcome={welcome}
-            introduction={introduction}
-            intendedFor={intendedFor}
-            padding={padding}
-            backgroundImage={backgroundImage}
-            layoutSize={layoutSize as LayoutSize}
-        >
-            {children}
-        </AuthenticateLayout>
+        <html lang={params.lang}>
+            <ReduxProvider>
+                <SessionsProvider session={session}>
+                    <NextIntlClientProvider messages={messages} locale={params.lang}>
+                        <body className={inter.className}>
+                            <AuthenticateLayout
+                                welcome={welcome}
+                                introduction={introduction}
+                                intendedFor={intendedFor}
+                                padding={padding}
+                                backgroundImage={backgroundImage}
+                                layoutSize={layoutSize as LayoutSize}
+                            >
+                                {children}
+                            </AuthenticateLayout>
+                        </body>
+                        <Toaster />
+                    </NextIntlClientProvider>
+                </SessionsProvider>
+            </ReduxProvider>
+        </html>
+
     )
 }

@@ -1,12 +1,15 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import '@/app/globals.css';
+import { NextIntlClientProvider } from 'next-intl';
+import { ReduxProvider } from "@/context/ReduxProvider";
+import SessionsProvider from "@/context/SessionProvider";
 import { auth } from "@/auth";
-import { getMessages, getTranslations } from "next-intl/server";
-import Sidebar from "@/components/custom/sidebar/Sidebar";
-import UserSidebar from "@/components/custom/sidebar/user-sidebar";
-import { MdTask } from "react-icons/md";
+import { getMessages } from "next-intl/server";
+import { Toaster } from "sonner";
 import Header from "@/components/custom/header/Header";
+import { MdTask } from "react-icons/md";
+import UserSidebar from "@/components/custom/sidebar/user-sidebar";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -23,28 +26,38 @@ export default async function RootLayout({
 }>) {
   const session = await auth()
   const messages = await getMessages()
-  const t = await getTranslations()
-
   return (
-    <div>
-      <div className="flex h-[60px]">
-        <div className='flex basis-1/5 items-center justify-center gap-x-3 border-2 border-r-0 pt-2 pb-2 mb-3 h-full border-slate-200'>
-          <div className='bg-blue-600 p-2 rounded'><MdTask color='white' className='w-4 h-4' /></div>
-          <p className='text-blue-600 text-sm'><b>Task</b></p>
-        </div>
-        <Header/>
-      </div>
-      <div className="flex">
-        <div
-          className="sticky hidden top-20 lg:flex max-w-[20%]"
-          style={{ height: 'calc(100vh - 80px)' }}
-        >
-          <UserSidebar />
-        </div>
-        <div className="px-6 py-10 sm:px-8 xl:px-14 grow bg-gray-200	">
-          {children}
-        </div>
-      </div>
-    </div>
+    <html lang={params.lang}>
+      <ReduxProvider>
+        <SessionsProvider session={session}>
+          <NextIntlClientProvider messages={messages} locale={params.lang}>
+            <body className={inter.className}>
+              <div className="flex h-[60px]">
+                <div className='flex basis-1/5 items-center justify-center gap-x-3 border-2 border-r-0 pt-2 pb-2 mb-3 h-full border-slate-200'>
+                  <div className='bg-blue-600 p-2 rounded'><MdTask color='white' className='w-4 h-4' /></div>
+                  <p className='text-blue-600 text-sm'><b>Task</b></p>
+                </div>
+                <Header />
+              </div>
+              <div className="flex">
+                <div
+                  className="sticky hidden top-20 lg:flex max-w-[20%]"
+                  style={{ height: 'calc(100vh - 80px)' }}
+                >
+                  <UserSidebar />
+                </div>
+                <div className="px-6 py-10 sm:px-8 xl:px-14 grow bg-gray-200	">
+                  {children}
+                </div>
+              </div>
+            </body>
+            <Toaster />
+          </NextIntlClientProvider>
+        </SessionsProvider>
+      </ReduxProvider>
+    </html>
   );
 }
+
+// {/* @ts-expect-error Async Server Component */}
+// <Footer/>

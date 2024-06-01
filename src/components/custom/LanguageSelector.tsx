@@ -11,6 +11,8 @@ export default function LanguageSelector(): React.ReactElement {
   const locale = useLocale()
   
   const pathname = usePathname();
+  console.log("pathname: ", pathname);
+  
   const router = useRouter()
   const handleLanguageChange = (code: string) => {
     router.replace(pathname, {locale: code});
@@ -30,9 +32,9 @@ export default function LanguageSelector(): React.ReactElement {
                     className="w-full h-full "
                   />
                 </div>
-                <Badge className="text-xs border" color="success">
+                {/* <Badge className="text-xs border" color="success">
                   {t('header.language.buttonChange')}
-                </Badge>
+                </Badge> */}
               </div>
             </TooltipTrigger>
             <TooltipContent className="w-max">

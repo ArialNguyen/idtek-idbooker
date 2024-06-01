@@ -1,5 +1,6 @@
 'use client'
 import { logoutAction } from '@/actions/authActions'
+import LanguageSelector from '@/components/custom/LanguageSelector'
 import Modal from '@/components/custom/modal/Modal'
 import Dropdown from '@/components/ui/Dropdown'
 import { Button } from '@/components/ui/button'
@@ -51,6 +52,12 @@ export default function Header({ }: Props) {
                                 <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
                             </svg>
                         </div>
+                    </div>
+                    <div className='w-2/12 '>
+                        <div className={`w-10 h-10 bg-slate-200 flex justify-center items-center border-2 p-3.5 m-1 rounded-full hover:drop-shadow-2xl`}>
+                            <LanguageSelector />
+                        </div>
+
                     </div>
                     <div className='w-2/12'>
                         <div className={`w-10 bg-slate-200 flex justify-center items-center text-white border-2 p-3.5 m-1 rounded-full hover:drop-shadow-2xl`}>
