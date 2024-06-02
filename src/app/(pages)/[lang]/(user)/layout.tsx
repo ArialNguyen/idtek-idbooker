@@ -32,8 +32,8 @@ export default async function RootLayout({
         <SessionsProvider session={session}>
           <NextIntlClientProvider messages={messages} locale={params.lang}>
             <body className={inter.className}>
-              <div className="flex h-[60px]">
-                <div className='flex basis-1/5 items-center justify-center gap-x-3 border-2 border-r-0 pt-2 pb-2 mb-3 h-full border-slate-200'>
+              <div className="flex h-[50px]">
+                <div className='flex basis-1/5 items-center justify-center gap-x-3 border-2 border-r-0 h-[100%] border-slate-200'>
                   <div className='bg-blue-600 p-2 rounded'><MdTask color='white' className='w-4 h-4' /></div>
                   <p className='text-blue-600 text-sm'><b>Task</b></p>
                 </div>
@@ -46,7 +46,7 @@ export default async function RootLayout({
                 >
                   <UserSidebar />
                 </div>
-                <div className="px-6 py-10 sm:px-8 xl:px-14 grow bg-gray-200	">
+                <div className="w-[100%]">
                   {children}
                 </div>
               </div>

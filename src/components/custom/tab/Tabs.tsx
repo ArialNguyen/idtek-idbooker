@@ -57,15 +57,15 @@ Tabs.Item = function TabsItem({
   return (
     <div
       className={cn(
-        'flex items-center justify-center cursor-pointer p-4 text-sm font-medium rounded-t-lg first:ml-0 disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500 focus:ring-4 focus:ring-emerald-300 focus:outline-none',
+        'flex items-center justify-center cursor-pointer text-sm font-medium rounded-t-lg first:ml-0 disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500 focus:ring-4 focus:ring-emerald-300 focus:outline-none',
       
       )}
       // onClick={handleClick}
     >
       {activeTab === title ?
-        <div className='w-full h-full' onClick={handleClick}>{render}</div> :
-        <div className="w-full m-2 flex justify-center content-center" onClick={handleClick} >
-          <div className="w-12/12 p-1">{title}</div>
+        <div className='h-full' onClick={handleClick}>{render}</div> :
+        <div className="flex gap-x-2 text-slate-500 justify-center content-center" onClick={handleClick} >
+          <div className="p-1 m-2">{title}</div>
         </div>
       }
     </div>

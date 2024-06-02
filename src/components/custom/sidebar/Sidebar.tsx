@@ -113,7 +113,7 @@ export default function Sidebar({
     >
       <div className={baseUtils}>
         <div
-          className="absolute p-1 rounded top-2 -right-7 bg-slate-200"
+          className="absolute p-1 rounded -top-5 right-0 cursor-pointer"
           onClick={handleChangeCollapse}
         >
           <CollapseIcon className={iconUtils} />

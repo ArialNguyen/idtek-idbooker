@@ -9,9 +9,6 @@ import { ReduxProvider } from "@/context/ReduxProvider";
 import SessionsProvider from "@/context/SessionProvider";
 import { auth } from "@/auth";
 import { getMessages } from "next-intl/server";
-import Header from "@/components/custom/header/Header";
-import { MdTask } from "react-icons/md";
-import UserSidebar from "@/components/custom/sidebar/user-sidebar";
 
 type LayoutSize = 'xs' | 'sm' | 'md' | 'lg'
 

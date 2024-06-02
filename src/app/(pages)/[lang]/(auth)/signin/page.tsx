@@ -6,6 +6,7 @@ import FormSuccess from '@/components/custom/form-sucess';
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { useRouter } from '@/navigation';
 import { LoginSchema } from '@/schemas';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useTranslations } from 'next-intl';
@@ -27,7 +28,7 @@ export default function Signin({ params }: { params: { lang: string } }) {
     const [isPending, startTrasition] = useTransition()
     const [error, setError] = useState<string | undefined>("")
     const [success, setSuccess] = useState<string | undefined>("")
-
+    const router = useRouter()
     const form = useForm<z.infer<typeof LoginSchema>>({
         resolver: zodResolver(LoginSchema),
         defaultValues: {
@@ -43,6 +44,7 @@ export default function Signin({ params }: { params: { lang: string } }) {
             LoginAction(values, callbackUrl).then((value) => {
                 setError(value.error)
                 setSuccess(value.success)
+                if (value.success) router.push("/")
             })
         })
     }

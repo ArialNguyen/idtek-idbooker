@@ -24,17 +24,14 @@ export default function LanguageSelector(): React.ReactElement {
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <div className="flex items-center gap-2 transition-all hover:text-emerald-500">
-                <div className="h-5 w-7">
+              <div className="flex items-center transition-all hover:text-emerald-500">
+                <div className="h-[100%] w-[100%]">
                   <img
                     src={locale === 'en' ? '/english.png' : '/vietnam.png'}
                     alt=""
-                    className="w-full h-full "
+                    className="w-[60%]"
                   />
                 </div>
-                {/* <Badge className="text-xs border" color="success">
-                  {t('header.language.buttonChange')}
-                </Badge> */}
               </div>
             </TooltipTrigger>
             <TooltipContent className="w-max">
