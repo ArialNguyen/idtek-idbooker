@@ -5,28 +5,142 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import React from 'react'
+import React, { ReactNode, useMemo, useState } from 'react'
 import { IoMdAdd } from "react-icons/io";
 import { BsThreeDots } from "react-icons/bs";
 import { Button } from '@/components/ui/button'
 import { BsViewList } from "react-icons/bs";
 import { MdOutlineViewKanban } from "react-icons/md";
 import { GiSettingsKnobs } from "react-icons/gi";
+import { TaskType } from '@/types/task'
+import { Column, columnId } from '@/types/column'
+import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
+import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
+import { createPortal } from 'react-dom'
 
 
 type Props = {}
 
+interface ItemProps {
+  title: string;
+  bgColor: string
+  number: number
+}
+
+interface TaskColumnProps {
+  column: Column
+  style: any
+  tasks: TaskType[]
+}
+
 export default function HomePage({ }: Props) {
+
+  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
+
+  const [columns, setColumns] = useState<Column[]>(columnData);
+
+  const [previousTask, setPreviousTask] = useState<TaskType | null>(null)
+
+  const columnsId = useMemo(() => {
+    return columns.map(col => col.id)
+  }, [columns])
+
+  columnsId
+
+  const [tasks, setTasks] = useState<TaskType[]>(tasksData)
+
   const t = useTranslations()
+
   const handleTabClick = (title: String) => {
 
   }
   const session = useSession()
+
   const user = session.data!!.user!!
 
   const openTableTask = () => {
     console.log("aaaa");
   }
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 10,
+      },
+    })
+  );
+
+  const onDragStart = (event: DragStartEvent) => {
+    if (event.active.data.current?.type === "Task") {
+      console.log("Drag Start: ", event.active.data.current.task);
+      setPreviousTask({...event.active.data.current.task})
+      setActiveTask(event.active.data.current.task);
+      return;
+    }
+  }
+
+  const onDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event
+    console.log("End: ", active);
+    console.log("End1: ", previousTask);
+    console.log("End2: ", over);
+    if (active.data.current?.type !== over?.data.current?.type){ // Move Task to another column
+
+    }else{
+      const currentTask = over!!.data.current!!.task as TaskType
+      if (previousTask!!.status !== currentTask.status){ // Move Task to another Position in another Column
+
+      }else{ // Swap Task or Do nothing in one Column
+
+      }
+    }
+    
+
+    setActiveTask(null)
+  }
+
+  const onDragOver = (event: DragOverEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+
+    const activeId = active.id;
+    const overId = over.id;
+    console.log(active.data.current?.type, over.data.current?.type);
+
+    if (activeId === overId) return;
+
+    const isActiveATask = active.data.current?.type === "Task";
+    const isOverATask = over.data.current?.type === "Task";
+
+    if (!isActiveATask) return;
+
+    // Im dropping a Task over another Task
+    if (isActiveATask && isOverATask) {
+      setTimeout(() => setTasks((tasks) => {
+        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        const overIndex = tasks.findIndex((t) => t.id === overId);
+
+        if (tasks[activeIndex].status != tasks[overIndex].status) {
+          // Fix introduced after video recording
+          // setPreviousTask(tasks[activeIndex])
+          tasks[activeIndex].status = tasks[overIndex].status;
+          return arrayMove(tasks, activeIndex, overIndex - 1);
+        }
+        return arrayMove(tasks, activeIndex, overIndex);
+      }), 0)
+    }
+    // Im dropping a Task over a column
+    const isOverAColumn = over.data.current?.type === "Column";
+    if (isActiveATask && isOverAColumn) {
+      setTimeout(() => setTasks((tasks) => {
+        const activeIndex = tasks.findIndex((t) => t.id === activeId);
+        // setPreviousTask(tasks[activeIndex])
+        tasks[activeIndex].status = overId;
+        return arrayMove(tasks, activeIndex, activeIndex);
+      }), 0)
+    }
+  }
+
   return (
     <div className='flex flex-col'>
       <div className='p-4 pt-1 pb-0 border-2 border-solid border-t-0 bg-white text-xs gap-y-2'>
@@ -134,26 +248,91 @@ export default function HomePage({ }: Props) {
               <span className='text-blue-500 font-semibold text-xs'>KanBan View</span>
             </Button>
             <Button size={"xs"} variant="white" className='border-2 border-solid	border-gray-200'>
-              <GiSettingsKnobs color='gray' className='w-6'/>
+              <GiSettingsKnobs color='gray' className='w-6' />
               <span className='text-slate-500 font-semibold text-xs'>Filters</span>
             </Button>
           </div>
         </div>
       </div>
-      <div className='bg-gray-100 h-[400px] flex p-3 gap-x-5'>
-        <TaskColumn index={0} title='My Tasks' />
-        <TaskColumn index={1} title='To Do' />
-        <TaskColumn index={2} title='In Progress' />
-        <TaskColumn index={3} title='Done' />
-      </div>
+      <DndContext
+        sensors={sensors}
+        onDragStart={onDragStart}
+        onDragEnd={onDragEnd}
+        onDragOver={onDragOver}
+      >
+        <div id='content' className='bg-gray-100 min-h-screen flex p-3 gap-x-5'>
+          <SortableContext items={columnsId}>
+            {
+              columns.map((col, index) => (
+                <TaskColumn
+                  key={index}
+                  style={TaskColumnColors.find(
+                    (color) => color.columnId == col.id
+                  )}
+                  tasks={tasks.filter(task => task.status === col.id)}
+                  column={col} />
+              ))
+            }
+          </SortableContext>
+        </div>
+        {createPortal(
+          <DragOverlay>
+            {activeTask && (
+              <Task
+                className="-rotate-12"
+                task={activeTask}
+              />
+            )}
+          </DragOverlay>,
+          document.body // Need to change the target container to only content page
+        )}
+      </DndContext>
     </div>
   )
 }
 
-interface ItemProps {
-  title: string;
-  bgColor: string
-  number: number
+
+function TaskColumn({ column, style, tasks }: TaskColumnProps) {
+  const { dotColor, textColor, bgTextColor } = style
+
+  const taskIds = useMemo(() => {
+    return tasks.map(task => task.id)
+  }, [tasks])
+
+  const {
+    setNodeRef,
+  } = useSortable({
+    id: column.id,
+    data: {
+      type: "Column",
+      column,
+    },
+  });
+  return (
+    <div ref={setNodeRef} style={style} className='basis-1/4 flex flex-col gap-y-3'>
+      <div className='flex mb-3 justify-between'>
+        <div className='gap-x-3 flex items-center'>
+          <div className={`rounded-full w-2 h-2 ${dotColor}`} />
+          <b className='ml-[-5px] text-xs'>{column.title}</b>
+          <span className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}>10</span>
+        </div>
+        <div className='flex gap-x-2 items-center'>
+          <span className='p-1 cursor-pointer rounded-full bg-white'><IoMdAdd color='blue' /></span>
+          <BsThreeDots className='cursor-pointer' />
+        </div>
+      </div>
+      <SortableContext items={taskIds}>
+        {tasks.map((task, index) => (
+          <Task key={index} task={task} />
+        ))}
+      </SortableContext>
+
+      <div className='flex justify-center items-center gap-x-2 text-xs text-blue-500 cursor-pointer p-2 bg-white rounded-md font-semibold hover:bg-sky-100'>
+        <IoMdAdd color='blue' className='w-5' />
+        <p>Add New Task</p>
+      </div>
+    </div>
+  )
 }
 
 function Item({ title, bgColor, number }: ItemProps) {
@@ -166,36 +345,73 @@ function Item({ title, bgColor, number }: ItemProps) {
 }
 
 const TaskColumnColors = [
-  { dotColor: "bg-blue-500", textColor: "text-blue-500", bgTextColor: "bg-blue-100" },
-  { dotColor: "bg-fuchsia-800", textColor: "text-fuchsia-600", bgTextColor: "bg-fuchsia-100" },
-  { dotColor: "bg-pink-500", textColor: "text-pink-500", bgTextColor: "bg-pink-200" },
-  { dotColor: "bg-green-500", textColor: "text-green-500", bgTextColor: "bg-green-200" }
+  { columnId: "Default", dotColor: "bg-blue-500", textColor: "text-blue-500", bgTextColor: "bg-blue-100" },
+  { columnId: "ToDo", dotColor: "bg-fuchsia-800", textColor: "text-fuchsia-600", bgTextColor: "bg-fuchsia-100" },
+  { columnId: "InProgress", dotColor: "bg-pink-500", textColor: "text-pink-500", bgTextColor: "bg-pink-200" },
+  { columnId: "Done", dotColor: "bg-green-500", textColor: "text-green-500", bgTextColor: "bg-green-200" }
 ]
 
-interface TaskColumnProps {
-  title: string
-  index: number
-}
-function TaskColumn({ title, index }: TaskColumnProps) {
-  const session = useSession()
-  const user = session.data!!.user!!
-  const { dotColor, textColor, bgTextColor } = TaskColumnColors[index]
+const columnData: Column[] = [
+  { id: "Default", "title": "My Tasks" },
+  { id: "ToDo", "title": "To Do" },
+  { id: "InProgress", "title": "In Progress" },
+  { id: "Done", "title": "Done" },
+]
 
-  return (
-    <div className='basis-1/4 flex flex-col gap-y-3'>
-      <div className='flex mb-3 justify-between'>
-        <div className='gap-x-3 flex items-center'>
-          <div className={`rounded-full w-2 h-2 ${dotColor}`} />
-          <b className='ml-[-5px] text-xs'>{title}</b>
-          <span className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}>10</span>
-        </div>
-        <div className='flex gap-x-2 items-center'>
-          <span className='p-1 cursor-pointer rounded-full bg-white'><IoMdAdd color='blue' /></span>
-          <BsThreeDots className='cursor-pointer' />
-        </div>
-      </div>
-      <Task level='High' title='App wireframe design using figma' userCreated={{ image: user.image as string, id: user.id }} createdAt='01 Jan, 2023' />
-      <Task level='Low' title='App wireframe design using figma' userCreated={{ image: user.image as string, id: user.id }} createdAt='01 Jan, 2023' />
-    </div>
-  )
-}
+const tasksData: TaskType[] = [
+  {
+    id: "1",
+    title: "Task 1",
+    level: "Low",
+    userCreated: {
+      userId: "Hưng nguyễn",
+      image: "https://avatars.githubusercontent.com/u/87338733?v=4"
+    },
+    status: "Default",
+    createdAt: "01 Jan, 2023"
+  },
+  {
+    id: "2",
+    title: "Task 2",
+    level: "Medium",
+    userCreated: {
+      userId: "Hưng nguyễn",
+      image: "https://avatars.githubusercontent.com/u/87338733?v=4"
+    },
+    status: "ToDo",
+    createdAt: "01 Jan, 2023"
+  },
+  {
+    id: "3",
+    title: "Task 3",
+    level: "High",
+    userCreated: {
+      userId: "Hưng nguyễn",
+      image: "https://avatars.githubusercontent.com/u/87338733?v=4"
+    },
+    status: "InProgress",
+    createdAt: "01 Jan, 2023"
+  },
+  {
+    id: "4",
+    title: "Task 4",
+    level: "Medium",
+    userCreated: {
+      userId: "Hưng nguyễn",
+      image: "https://avatars.githubusercontent.com/u/87338733?v=4"
+    },
+    status: "Default",
+    createdAt: "01 Jan, 2023"
+  },
+  {
+    id: "5",
+    title: "Task 5",
+    level: "High",
+    userCreated: {
+      userId: "Hưng nguyễn",
+      image: "https://avatars.githubusercontent.com/u/87338733?v=4"
+    },
+    status: "Default",
+    createdAt: "01 Jan, 2023"
+  }
+]
