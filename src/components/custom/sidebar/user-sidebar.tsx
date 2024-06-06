@@ -22,7 +22,7 @@ export default function UserSidebar({ }: Props) {
         <Sidebar> 
             <Sidebar.Items>
                 <Sidebar.ItemGroup>
-                    <Sidebar.Item to="#" end icon={FaPalette as IconType} number={undefined}>
+                    <Sidebar.Item className='' to="#" end icon={FaPalette as IconType} number={undefined}>
                         {t('sidebar.user.dashboard')}
                     </Sidebar.Item>
                     <Sidebar.Item to="/" icon={FaAddressCard as IconType} number={2}>

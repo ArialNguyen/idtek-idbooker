@@ -5,7 +5,8 @@ import {
   TbLayoutSidebarLeftCollapse,
   TbLayoutSidebarLeftExpand,
 } from 'react-icons/tb'
-import { MdOutlineTask, MdTask } from "react-icons/md";
+import { TiArrowBackOutline } from "react-icons/ti";
+import { TiArrowForwardOutline } from "react-icons/ti";
 
 import type { IconType } from 'react-icons'
 import clsx from 'clsx'
@@ -95,7 +96,7 @@ export default function Sidebar({
   const handleChangeCollapse = () => setIsCollapse((prev) => !prev)
 
   const CollapseIcon = (
-    isCollapse ? TbLayoutSidebarLeftExpand : TbLayoutSidebarLeftCollapse
+    isCollapse ? TiArrowForwardOutline : TiArrowBackOutline
   ) as IconType
   const baseUtils = clsx(
     className,
@@ -113,12 +114,11 @@ export default function Sidebar({
     >
       <div className={baseUtils}>
         <div
-          className="absolute p-1 rounded -top-5 right-0 cursor-pointer"
+          className="absolute p-1 rounded -top-6 right-0 cursor-pointer"
           onClick={handleChangeCollapse}
         >
           <CollapseIcon className={iconUtils} />
         </div>
-        
         {children}
       </div>
     </SidebarContext.Provider>
@@ -195,9 +195,11 @@ Sidebar.Item = function SidebarItem({
   const noActiveUtils = clsx(baseUtils, theme.item.active.off)
 
   const content = (
-    <div className="flex p-3 items-center h-3 gap-x-2 w-full">
-      <Icon className={iconUtils}  />
-      {!isCollapse && children}
+    <div className="flex p-1 text-xs items-center h-3 justify-between w-full">
+      <div className='flex gap-x-2'>
+        <Icon className={iconUtils} />
+        {!isCollapse && children}
+      </div>
       {!isCollapse && number && (<Badge variant='destructive' className='ml-auto '>{number}</Badge>)}
     </div>
   )

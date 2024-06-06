@@ -1,4 +1,4 @@
-import { columnId } from "@/types/column"
+import { ColumnId } from "@/types/column"
 
 export interface TaskType {
     id: string | number
@@ -8,7 +8,7 @@ export interface TaskType {
         userId: string
         image: string
     },
-    status: columnId | number
+    status: ColumnId | number
     createdAt: string
 }
 

@@ -33,7 +33,7 @@ export default async function RootLayout({
           <NextIntlClientProvider messages={messages} locale={params.lang}>
             <body className={inter.className}>
               <div className="flex h-[50px]">
-                <div className='flex basis-1/5 items-center justify-center gap-x-3 border-2 border-r-0 h-[100%] border-slate-200'>
+                <div className='flex w-[18%] items-center justify-center gap-x-3 border-2 border-r-0 h-[100%] border-slate-200'>
                   <div className='bg-blue-600 p-2 rounded'><MdTask color='white' className='w-4 h-4' /></div>
                   <p className='text-blue-600 text-sm'><b>Task</b></p>
                 </div>
@@ -41,7 +41,7 @@ export default async function RootLayout({
               </div>
               <div className="flex">
                 <div
-                  className="sticky hidden top-20 lg:flex max-w-[20%]"
+                  className="sticky hidden top-20 lg:flex max-w-[18%]"
                   style={{ height: 'calc(100vh - 80px)' }}
                 >
                   <UserSidebar />

@@ -1,4 +1,5 @@
 'use client'
+import { createPortal } from 'react-dom';
 import Tabs from '@/components/custom/tab/Tabs'
 import Task from '@/components/custom/task'
 import { Badge } from '@/components/ui/badge'
@@ -13,11 +14,12 @@ import { BsViewList } from "react-icons/bs";
 import { MdOutlineViewKanban } from "react-icons/md";
 import { GiSettingsKnobs } from "react-icons/gi";
 import { TaskType } from '@/types/task'
-import { Column, columnId } from '@/types/column'
+import { Column, ColumnId } from '@/types/column'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
 import { DndContext, DragEndEvent, DragOverEvent, DragOverlay, DragStartEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { createPortal } from 'react-dom'
-
+import useTaskTab from '@/hooks/useTaskTab';
+import AddAndUpdateTask from '@/components/custom/add-update-task';
+import { v4 } from 'uuid';
 
 type Props = {}
 
@@ -28,39 +30,49 @@ interface ItemProps {
 }
 
 interface TaskColumnProps {
+  handleUpdateTasks: (tasks: TaskType[]) => void
   column: Column
   style: any
-  tasks: TaskType[]
+  tasksInCol: TaskType[]
+}
+
+interface CriteriaProps {
+  view: "kanban" | "list"
 }
 
 export default function HomePage({ }: Props) {
 
-  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
+  const [criteria, setCriteria] = useState<CriteriaProps>({
+    view: "kanban"
+  })
+  const [tabSelected, setTabSelected] = useState<string>("task")
 
   const [columns, setColumns] = useState<Column[]>(columnData);
+  
+  const [tasks, setTasks] = useState<TaskType[]>(tasksData)
+
+  const [activeTask, setActiveTask] = useState<TaskType | null>(null);
 
   const [previousTask, setPreviousTask] = useState<TaskType | null>(null)
 
-  const columnsId = useMemo(() => {
-    return columns.map(col => col.id)
-  }, [columns])
+  const [taskClicked, setTaskClicked] = useState<TaskType | undefined>(undefined)
 
-  columnsId
+  const [addTaskColumnClicked, setaddTaskColumnClicked] = useState<ColumnId | undefined>(undefined)
 
-  const [tasks, setTasks] = useState<TaskType[]>(tasksData)
+  const columnsId = useMemo(() => { return columns.map(col => col.id) }, [columns])
 
-  const t = useTranslations()
+  const { task: taskTab, openTaskTab, closeTaskTab } = useTaskTab()
 
-  const handleTabClick = (title: String) => {
+  const handleTabClick = (tabTitle: string) => {
+    setTabSelected(tabTitle)
+  }
 
+  const handleUpdateTasksInColumn = (tasks: TaskType[]) => {
+    setTasks(tasks)
   }
   const session = useSession()
 
   const user = session.data!!.user!!
-
-  const openTableTask = () => {
-    console.log("aaaa");
-  }
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -72,8 +84,7 @@ export default function HomePage({ }: Props) {
 
   const onDragStart = (event: DragStartEvent) => {
     if (event.active.data.current?.type === "Task") {
-      console.log("Drag Start: ", event.active.data.current.task);
-      setPreviousTask({...event.active.data.current.task})
+      setPreviousTask({ ...event.active.data.current.task })
       setActiveTask(event.active.data.current.task);
       return;
     }
@@ -81,20 +92,16 @@ export default function HomePage({ }: Props) {
 
   const onDragEnd = (event: DragEndEvent) => {
     const { active, over } = event
-    console.log("End: ", active);
-    console.log("End1: ", previousTask);
-    console.log("End2: ", over);
-    if (active.data.current?.type !== over?.data.current?.type){ // Move Task to another column
+    if (active.data.current?.type !== over?.data.current?.type) { // Move Task to another column
 
-    }else{
+    } else {
       const currentTask = over!!.data.current!!.task as TaskType
-      if (previousTask!!.status !== currentTask.status){ // Move Task to another Position in another Column
+      if (previousTask!!.status !== currentTask.status) { // Move Task to another Position in another Column
 
-      }else{ // Swap Task or Do nothing in one Column
+      } else { // Swap Task or Do nothing in one Column
 
       }
     }
-    
 
     setActiveTask(null)
   }
@@ -105,7 +112,6 @@ export default function HomePage({ }: Props) {
 
     const activeId = active.id;
     const overId = over.id;
-    console.log(active.data.current?.type, over.data.current?.type);
 
     if (activeId === overId) return;
 
@@ -141,6 +147,68 @@ export default function HomePage({ }: Props) {
     }
   }
 
+  const TaskColumn = ({ column, style, tasksInCol }: TaskColumnProps) => {
+    const { dotColor, textColor, bgTextColor } = style
+
+    const taskIds = useMemo(() => {
+      return tasksInCol.map(task => task.id)
+    }, [tasksInCol])
+
+    const {
+      setNodeRef,
+    } = useSortable({
+      id: column.id,
+      data: {
+        type: "Column",
+        column,
+      },
+    });
+
+    return (
+      <div ref={setNodeRef} style={style} className='basis-1/4 flex flex-col gap-y-3'>
+        <div className='flex mb-3 justify-between'>
+          <div className='gap-x-3 flex items-center'>
+            <div className={`rounded-full w-2 h-2 ${dotColor}`} />
+            <b className='ml-[-5px] text-xs'>{column.title}</b>
+            <span className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}>10</span>
+          </div>
+          <div className='flex gap-x-2 items-center'>
+            <span onClick={() => {
+              if (taskTab == "AddNew") return closeTaskTab()
+              setaddTaskColumnClicked(column.id as string)
+              openTaskTab("AddNew")
+            }} className='p-1 cursor-pointer rounded-full bg-white'><IoMdAdd color='blue' /></span>
+            <BsThreeDots className='cursor-pointer' />
+          </div>
+        </div>
+        <SortableContext items={taskIds}>
+          {tasksInCol.map((task, index) => (
+            <Task
+              className='hover:bg-slate-50'
+              onDeleteClick={() => {
+                const tasksTmp = [...tasks]
+                tasksTmp.splice(tasksTmp.findIndex(t => t.id == task.id), 1)
+                setTasks(tasksTmp)
+              }}
+              onDetailClick={() => {
+                if (taskTab == "Update") return closeTaskTab()
+                setTaskClicked(task)
+                openTaskTab("Update")
+              }} key={index} task={task} />
+          ))}
+        </SortableContext>
+
+        <div onClick={() => {
+          if (taskTab == "AddNew") return closeTaskTab()
+          setaddTaskColumnClicked(column.id as string)
+          openTaskTab("AddNew")
+        }} className='flex justify-center items-center gap-x-2 text-xs text-blue-500 cursor-pointer p-2 bg-white rounded-md font-semibold hover:bg-sky-100'>
+          <IoMdAdd color='blue' className='w-5' />
+          <p>Add New Task</p>
+        </div>
+      </div>
+    )
+  }
   return (
     <div className='flex flex-col'>
       <div className='p-4 pt-1 pb-0 border-2 border-solid border-t-0 bg-white text-xs gap-y-2'>
@@ -159,13 +227,13 @@ export default function HomePage({ }: Props) {
             </div>
             <div >
               <Button size={"xs"} className='mr-2 bg-sky-600 hover:bg-sky-700 text-white'
-                onClick={() => { openTableTask() }}
+                onClick={() => openTaskTab("AddNew")}
               >
-                <div className={`w-3.5 flex justify-center items-center text-white mr-2 `}>
+                <div className={`w-3.5 flex justify-center items-center text-white mr-2 `} >
                   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512" className='fill-white	 '>
                     <path d="M96 128a128 128 0 1 1 256 0A128 128 0 1 1 96 128zM0 482.3C0 383.8 79.8 304 178.3 304h91.4C368.2 304 448 383.8 448 482.3c0 16.4-13.3 29.7-29.7 29.7H29.7C13.3 512 0 498.7 0 482.3zM504 312V248H440c-13.3 0-24-10.7-24-24s10.7-24 24-24h64V136c0-13.3 10.7-24 24-24s24 10.7 24 24v64h64c13.3 0 24 10.7 24 24s-10.7 24-24 24H552v64c0 13.3-10.7 24-24 24s-24-10.7-24-24z" /></svg>
                 </div>
-                <span className='text-xs font-semibold '>Add Task</span>
+                <span className='text-xs font-semibold ' >Add Task</span>
               </Button>
               <Button size={"xs"} variant="white" className='border-2 border-solid	border-blue-500'>
                 <div className={`w-3.5 flex justify-center items-center text-white mr-2 rounded-full hover:drop-shadow-2xl`}>
@@ -194,44 +262,45 @@ export default function HomePage({ }: Props) {
             <Tabs>
               <Tabs.Item
                 title='Overview'
-                onTabClick={() => handleTabClick('Opening')}
+                onTabClick={() => handleTabClick('overview')}
                 totals={20}
                 render={<Item title='Overview' bgColor="bg-sky-500" number={20} ></Item>}
               />
               <Tabs.Item
                 title='Task'
-                onTabClick={() => handleTabClick('Pending')}
+                active={true}
+                onTabClick={() => handleTabClick('task')}
                 totals={20}
                 render={<Item title='Task' bgColor="bg-red-500" number={20}></Item>}
               />
               <Tabs.Item
                 title='Discussion'
-                onTabClick={() => handleTabClick('Stopped')}
+                onTabClick={() => handleTabClick('discussion')}
                 totals={20}
                 render={<Item title='Discussion ' bgColor="bg-amber-500	" number={20}></Item>}
               />
               <Tabs.Item title='Files'
                 totals={20}
                 render={<Item title='Files' bgColor="bg-lime-500" number={20}></Item>}
-
+                onTabClick={() => handleTabClick('file')}
               />
               <Tabs.Item
                 title='Timeline'
-                onTabClick={() => handleTabClick("")}
+                onTabClick={() => handleTabClick("timeline")}
                 totals={20}
                 render={<Item title='Timeline' bgColor="bg-green-500" number={20}></Item>}
 
               />
               <Tabs.Item
                 title='Reports'
-                onTabClick={() => handleTabClick("")}
+                onTabClick={() => handleTabClick("reports")}
                 totals={20}
                 render={<Item title='Reports' bgColor="bg-teal-500" number={20}></Item>}
 
               />
               <Tabs.Item
                 title='More'
-                onTabClick={() => handleTabClick("")}
+                onTabClick={() => handleTabClick("more")}
                 totals={20}
                 render={<Item title='More' bgColor="bg-purple-500" number={20}></Item>}
 
@@ -239,101 +308,81 @@ export default function HomePage({ }: Props) {
             </Tabs>
           </div>
           <div>
-            <Button size={"xs"} variant="white" className='mr-3 border-2 border-solid	border-gray-200'>
-              <BsViewList color='gray' className='w-6' />
-              <span className='text-slate-500 font-semibold text-xs'>List View</span>
+            <Button onClick={() => {
+              setCriteria({ ...criteria, view: "list" })
+            }} size={"xs"} variant="white" className='mr-3 border-2 border-solid	border-gray-200'>
+              <BsViewList color={`${(criteria.view == "list") ? "blue" : "gray"}`} className='w-6' />
+              <span className={`${(criteria.view == "list") ? "text-blue-500" : "text-slate-500"}  font-semibold text-xs`}>List View</span>
             </Button>
-            <Button size={"xs"} variant="white" className='mr-3 border-2 border-solid	border-gray-200'>
-              <MdOutlineViewKanban color='blue' className='w-5' />
-              <span className='text-blue-500 font-semibold text-xs'>KanBan View</span>
+            <Button onClick={() => {
+              setCriteria({ ...criteria, view: "kanban" })
+            }} size={"xs"} variant="white" className='mr-3 border-2 border-solid	border-gray-200'>
+              <MdOutlineViewKanban color={`${(criteria.view == "kanban") ? "blue" : "gray"}`} className='w-5' />
+              <span className={`${(criteria.view == "kanban") ? "text-blue-500" : "text-slate-500"}  font-semibold text-xs`}>KanBan View</span> 
             </Button>
             <Button size={"xs"} variant="white" className='border-2 border-solid	border-gray-200'>
-              <GiSettingsKnobs color='gray' className='w-6' />
+              <GiSettingsKnobs className='w-6' />
               <span className='text-slate-500 font-semibold text-xs'>Filters</span>
             </Button>
           </div>
         </div>
       </div>
-      <DndContext
-        sensors={sensors}
-        onDragStart={onDragStart}
-        onDragEnd={onDragEnd}
-        onDragOver={onDragOver}
-      >
-        <div id='content' className='bg-gray-100 min-h-screen flex p-3 gap-x-5'>
-          <SortableContext items={columnsId}>
-            {
-              columns.map((col, index) => (
-                <TaskColumn
-                  key={index}
-                  style={TaskColumnColors.find(
-                    (color) => color.columnId == col.id
-                  )}
-                  tasks={tasks.filter(task => task.status === col.id)}
-                  column={col} />
-              ))
-            }
-          </SortableContext>
-        </div>
-        {createPortal(
-          <DragOverlay>
-            {activeTask && (
-              <Task
-                className="-rotate-12"
-                task={activeTask}
-              />
+      <AddAndUpdateTask key={v4()} action='AddNew' columnId={addTaskColumnClicked} show={taskTab == "AddNew"} onCloseTab={closeTaskTab} handleDoneClick={(task: TaskType) => {
+        setTasks([...tasks, task])
+        closeTaskTab()
+      }} />
+      <AddAndUpdateTask key={v4()} action='Update' task={taskClicked} show={taskTab == 'Update'} onCloseTab={closeTaskTab} handleDoneClick={(task: TaskType) => {
+        // tasks[tasks.findIndex(t => t.id == task.id)] = {...task}
+        // let idx = tasks.findIndex(t => t.id == task.id)
+        const tasksTmp = [...tasks]
+        tasksTmp[tasksTmp.findIndex(t => t.id == task.id)] = { ...task }
+        closeTaskTab()
+      }} />
+      <div id='content' className='bg-gray-100 min-h-screen flex p-3 gap-x-5'>
+        {tabSelected == "task" && criteria.view == "kanban" && (
+          <DndContext
+            sensors={sensors}
+            onDragStart={onDragStart}
+            onDragEnd={onDragEnd}
+            onDragOver={onDragOver}
+          >
+
+            <SortableContext items={columnsId}>
+              {
+                columns.map((col, index) => (
+                  <TaskColumn
+                    key={index}
+                    style={TaskColumnColors.find(
+                      (color) => color.columnId == col.id
+                    )}
+                    tasksInCol={tasks.filter(task => task.status === col.id)}
+                    handleUpdateTasks={handleUpdateTasksInColumn}
+                    column={col} />
+                ))
+              }
+            </SortableContext>
+
+            {createPortal(
+              <DragOverlay>
+                {activeTask && (
+                  <Task
+                    className="-rotate-12"
+                    task={activeTask}
+                  />
+                )}
+              </DragOverlay>,
+              document.body // Need to change the target container to only content page
             )}
-          </DragOverlay>,
-          document.body // Need to change the target container to only content page
+          </DndContext>
         )}
-      </DndContext>
-    </div>
+        {tabSelected == "task" && criteria.view == "list" && (
+          <p>Write List VIew here</p>
+        )}
+      </div>
+    </div >
   )
 }
 
-
-function TaskColumn({ column, style, tasks }: TaskColumnProps) {
-  const { dotColor, textColor, bgTextColor } = style
-
-  const taskIds = useMemo(() => {
-    return tasks.map(task => task.id)
-  }, [tasks])
-
-  const {
-    setNodeRef,
-  } = useSortable({
-    id: column.id,
-    data: {
-      type: "Column",
-      column,
-    },
-  });
-  return (
-    <div ref={setNodeRef} style={style} className='basis-1/4 flex flex-col gap-y-3'>
-      <div className='flex mb-3 justify-between'>
-        <div className='gap-x-3 flex items-center'>
-          <div className={`rounded-full w-2 h-2 ${dotColor}`} />
-          <b className='ml-[-5px] text-xs'>{column.title}</b>
-          <span className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}>10</span>
-        </div>
-        <div className='flex gap-x-2 items-center'>
-          <span className='p-1 cursor-pointer rounded-full bg-white'><IoMdAdd color='blue' /></span>
-          <BsThreeDots className='cursor-pointer' />
-        </div>
-      </div>
-      <SortableContext items={taskIds}>
-        {tasks.map((task, index) => (
-          <Task key={index} task={task} />
-        ))}
-      </SortableContext>
-
-      <div className='flex justify-center items-center gap-x-2 text-xs text-blue-500 cursor-pointer p-2 bg-white rounded-md font-semibold hover:bg-sky-100'>
-        <IoMdAdd color='blue' className='w-5' />
-        <p>Add New Task</p>
-      </div>
-    </div>
-  )
-}
 
 function Item({ title, bgColor, number }: ItemProps) {
   return (
@@ -344,14 +393,16 @@ function Item({ title, bgColor, number }: ItemProps) {
   )
 }
 
-const TaskColumnColors = [
+export const TaskColumnColors = [
   { columnId: "Default", dotColor: "bg-blue-500", textColor: "text-blue-500", bgTextColor: "bg-blue-100" },
   { columnId: "ToDo", dotColor: "bg-fuchsia-800", textColor: "text-fuchsia-600", bgTextColor: "bg-fuchsia-100" },
   { columnId: "InProgress", dotColor: "bg-pink-500", textColor: "text-pink-500", bgTextColor: "bg-pink-200" },
   { columnId: "Done", dotColor: "bg-green-500", textColor: "text-green-500", bgTextColor: "bg-green-200" }
 ]
 
-const columnData: Column[] = [
+
+
+export const columnData: Column[] = [
   { id: "Default", "title": "My Tasks" },
   { id: "ToDo", "title": "To Do" },
   { id: "InProgress", "title": "In Progress" },
@@ -415,3 +466,4 @@ const tasksData: TaskType[] = [
     createdAt: "01 Jan, 2023"
   }
 ]
+

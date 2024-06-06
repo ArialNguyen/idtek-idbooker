@@ -20,6 +20,7 @@ export default function LanguageSelector(): React.ReactElement {
 
   return (
     <Dropdown
+      width='w-[150px]'
       render={
         <TooltipProvider>
           <Tooltip>
@@ -44,22 +45,22 @@ export default function LanguageSelector(): React.ReactElement {
       position="bottomRight"
     >
       <Dropdown.Item onItemClick={() => handleLanguageChange('vi')}>
-        <div className="flex items-center gap-x-3">
+        <div className="flex text-sm items-center gap-x-3">
           <div className="flex items-center gap-x-2">
-            <img src={'/vietnam.png'} alt="" className="h-5 w-7" />
+            <img src={'/vietnam.png'} alt="" className="h-5 w-10" />
             <span className="w-[1px] h-6 bg-slate-200"></span>
           </div>
-          <span> {t('header.language.code.vi')}</span>
+          <span className='text-nowrap'> {t('header.language.code.vi')}</span>
         </div>
       </Dropdown.Item>
       <Dropdown.Divider />
       <Dropdown.Item onItemClick={() => handleLanguageChange('en')}>
-        <div className="flex items-center gap-x-3">
+        <div className="flex text-sm items-center gap-x-3">
           <div className="flex items-center gap-x-2">
-            <img src={'/english.png'} alt="" className="h-5 w-7" />
+            <img src={'/english.png'} alt="" className="h-5 w-10" />
             <span className="w-[1px] h-6 bg-slate-200"></span>
           </div>
-          <span> {t('header.language.code.en')}</span>
+          <span className=' text-nowrap'> {t('header.language.code.en')}</span>
         </div>
       </Dropdown.Item>
     </Dropdown>

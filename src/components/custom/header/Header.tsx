@@ -28,7 +28,7 @@ export default function Header({ }: Props) {
         })
     }
     return (
-        <div className='basis-4/5 h-[100%]'>
+        <div className='h-[100%] w-[82%]'>
             <div className='border-solid border-2 p-1 pb-0.5 flex justify-center items-center'>
                 <div className='w-8/12 '>
                     <div className='w-4/12 gap-x-1 p-1 bg-white border-solid border-2 border-stone-200 rounded-lg flex justify-center items-center'>
@@ -69,7 +69,7 @@ export default function Header({ }: Props) {
                         >
                             <Dropdown.Item icon={FaArrowRightFromBracket as IconType}>
                                 <div
-                                    className="w-full cursor-pointer"
+                                    className="w-fit cursor-pointer"
                                     onClick={() => openModal('logout-modal')}
                                 >
                                     {t('header.user.dropdown.logout')}

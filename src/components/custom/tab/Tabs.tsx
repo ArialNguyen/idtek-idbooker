@@ -33,6 +33,7 @@ export default Tabs;
 interface TabsItemProps {
   title: string;
   totals: number
+  active?: boolean
   onTabClick?: () => void;
   render: ReactNode
 }
@@ -40,6 +41,7 @@ interface TabsItemProps {
 Tabs.Item = function TabsItem({
   title,
   totals,
+  active,
   onTabClick = () => undefined,
   render
 }: TabsItemProps): JSX.Element {
@@ -53,6 +55,7 @@ Tabs.Item = function TabsItem({
     setActiveTab(title);
     onTabClick();
   };
+  if (active && !activeTab) setActiveTab(title) 
 
   return (
     <div
