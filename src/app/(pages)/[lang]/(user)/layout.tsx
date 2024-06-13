@@ -10,7 +10,6 @@ import { Toaster } from "sonner";
 import Header from "@/components/custom/header/Header";
 import { MdTask } from "react-icons/md";
 import UserSidebar from "@/components/custom/sidebar/user-sidebar";
-
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -28,6 +27,7 @@ export default async function RootLayout({
   const messages = await getMessages()
   return (
     <html lang={params.lang}>
+      
       <ReduxProvider>
         <SessionsProvider session={session}>
           <NextIntlClientProvider messages={messages} locale={params.lang}>
@@ -55,6 +55,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </SessionsProvider>
       </ReduxProvider>
+      
     </html>
   );
 }

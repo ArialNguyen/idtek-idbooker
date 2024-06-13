@@ -107,5 +107,36 @@
             "members": "Thành viên",
             "settings": "Cài đặt"
         }
+    },
+
+    "tabs":{
+        "user":{
+            "overview": "Tổng quan",
+            "task": "Công việc",
+            "discussion": "Thảo luận",
+            "files": "Tài liệu",
+            "timeline": "Thời gian biểu",
+            "reports": "Báo cáo",
+            "more": "Khác"
+        }
+    },
+    "column":{
+        "user":{
+            "addTask": "Thêm công việc",
+            "share": "Chia sẻ",
+            "theme": "Thay đổi theme"
+        }
+    },
+
+    "add-update-task":{
+        "user":{
+            "titled":"Chưa có tiêu đề",
+            "level": "Độ quan trọng",
+            "date": "Ngày",
+            "status": "Trạng thái",
+            "comment": "Mô tả"
+        }
     }
+
+
 }

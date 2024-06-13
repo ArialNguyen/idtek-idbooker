@@ -107,5 +107,35 @@
             "members": "Members",
             "settings": "Settings"
         }
+    },
+
+    "tabs":{
+        "user":{
+            "overview": "Overview",
+            "task": "Task",
+            "discussion": "Discussion",
+            "files": "Files",
+            "timeline": "Timeline",
+            "reports": "Reports",
+            "more": "More"
+        }
+    },
+    "column":{
+        "user":{
+            "addTask": "Add New Task",
+            "share": "Share",
+            "theme": "Change theme"
+        }
+    },
+
+    "add-update-task":{
+        "user":{
+            "titled":"Untitled",
+            "level": "Level",
+            "date": "Date",
+            "status": "Status",
+            "comment": "Add comment"
+        }
     }
+
 }

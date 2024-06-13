@@ -2,6 +2,7 @@
 
 import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 const TabsContext = createContext<{
   activeTab?: string;
@@ -56,15 +57,15 @@ Tabs.Item = function TabsItem({
     onTabClick();
   };
   if (active && !activeTab) setActiveTab(title) 
-
   return (
     <div
       className={cn(
         'flex items-center justify-center cursor-pointer text-sm font-medium rounded-t-lg first:ml-0 disabled:cursor-not-allowed disabled:text-gray-400 disabled:dark:text-gray-500 focus:ring-4 focus:ring-emerald-300 focus:outline-none',
-      
+
       )}
       // onClick={handleClick}
     >
+      
       {activeTab === title ?
         <div className='h-full' onClick={handleClick}>{render}</div> :
         <div className="flex gap-x-2 text-slate-500 justify-center content-center" onClick={handleClick} >

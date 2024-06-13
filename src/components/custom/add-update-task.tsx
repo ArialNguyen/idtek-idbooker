@@ -5,7 +5,7 @@ import { IoTimeOutline } from "react-icons/io5";
 import { TbCircleDashed } from "react-icons/tb";
 import Dropdown from '@/components/ui/Dropdown';
 import { TiArrowForwardOutline } from "react-icons/ti";
-
+import { useTranslations } from 'next-intl';
 import { Badge } from '@/components/ui/badge'
 import { TaskType } from '@/types/task';
 import { TaskColumnColors, columnData } from '@/app/(pages)/[lang]/(user)/home';
@@ -37,7 +37,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
     const session = useSession();
     const user = session.data!!.user
     // const [status, setStatus] = useState<React.JSX.Element>(<Badge variant="green">In Progress</Badge>)
-
+    const t = useTranslations()
     let defautlValues = {
         title: '',
         level: 'Low',
@@ -103,13 +103,13 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     </div>
                     <input className="text-2xl	font-bold outline-none" value={criteria.title} onChange={(event) => {
                         setCriteria({ ...criteria, title: event.target.value })
-                    }} name='Task' placeholder='Untitled' />
+                    }} name='Task' placeholder={t('add-update-task.user.titled')} />
                 </div>
                 <div className='w-10/12 h-fit py-2'>
                     <div className='w-full flex gap-2'>
                         <div className='w-3/12 flex items-center gap-4 p-2 rounded-sm	 hover:bg-stone-200'>
                             <SiLevelsdotfyi color='gray' />
-                            <span className='text-stone-400 text-sm	'>Level</span>
+                            <span className='text-stone-400 text-sm	'>{t('add-update-task.user.level')}</span>
                         </div>
                         <div className='w-7/12 flex items-center'>
                             <Dropdown
@@ -142,7 +142,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     <div className='w-full flex gap-2'>
                         <div className='w-3/12 flex items-center gap-4 p-2 rounded-sm	 hover:bg-stone-200'>
                             <IoTimeOutline color='gray' />
-                            <span className='text-stone-400 text-sm	'>Date</span>
+                            <span className='text-stone-400 text-sm	'>{t('add-update-task.user.date')}</span>
                         </div>
                         <div className='w-7/12  p-2 flex items-center rounded-sm hover:bg-stone-200'>
                             {criteria.createdAt}
@@ -151,7 +151,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     <div className='w-full flex gap-2'>
                         <div className='w-3/12 flex items-center gap-4 p-2 rounded-sm	 hover:bg-stone-200'>
                             <TbCircleDashed color='gray' />
-                            <span className='text-stone-400 text-sm	'>Status</span>
+                            <span className='text-stone-400 text-sm	'>{t('add-update-task.user.status')}</span>
                         </div>
                         <div className='w-7/12 flex items-center'>
                             {columnId && (
@@ -189,7 +189,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     <div className={`w-8 bg-slate-200 flex justify-center items-center text-white border-2 rounded-full hover:drop-shadow-2xl`}>
                         <img className='rounded-full' src={session.data?.user.image || "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/2048px-User_icon_2.svg.png"} alt="" />
                     </div>
-                    <input className="outline-none" placeholder='Add a comment' />
+                    <input className="outline-none" placeholder={t('add-update-task.user.comment')} />
                 </div>
             </div>
         </div>
