@@ -377,7 +377,7 @@ export default function HomePage({}: Props) {
                 style={style}
                 className="w-full flex flex-col gap-y-3"
             >
-                <div className="flex mb-3 justify-between">
+                <div className="flex justify-between">
                     <div className="gap-x-3 flex items-center">
                         <div className={`rounded-full w-2 h-2 ${dotColor}`} />
                         {/* My Task/ Todo/ In Progress / Done */}
@@ -453,6 +453,7 @@ export default function HomePage({}: Props) {
                     <IoMdAdd color="blue" className="w-5" />
                     {t('column.user.addTask')}
                 </div>
+                <hr className="h-px mb-8 bg-gray-400 border-0 dark:bg-gray-700" />
             </div>
         )
     }

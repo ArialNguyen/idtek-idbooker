@@ -86,19 +86,18 @@ export default function ListTask({
         >
             <TableCell className="flex">
                 {/* Show Task name */}
-                {isHover && (
-                    <BsTrash
-                        onClick={onDeleteClick}
-                        className="w-4 h-4 hover:text-red-500 hover:cursor-pointer mr-2"
-                    />
-                )}
-                {isHover && (
-                    <HiInformationCircle
-                        onClick={onDetailClick}
-                        className="w-4 h-4 hover:text-blue-400 hover:cursor-pointer mr-2"
-                    />
-                )}
-                <div className="flex justify-between">
+
+                <BsTrash
+                    onClick={onDeleteClick}
+                    className="w-4 h-4 hover:text-red-500 hover:cursor-pointer mr-2"
+                />
+
+                <HiInformationCircle
+                    onClick={onDetailClick}
+                    className="w-4 h-4 hover:text-blue-400 hover:cursor-pointer mr-2"
+                />
+
+                <div>
                     <div className="items-center font-semibold flex gap-x-1">
                         <FaRegSquareCheck color="gray" />
                         {task.title}
@@ -107,7 +106,7 @@ export default function ListTask({
             </TableCell>
             <TableCell>
                 {/* Show Due Date */}
-                <div className="flex justify-between items-center mt-1">
+                <div className="items-center mt-1">
                     <div className="flex gap-x-2">
                         <img
                             className="rounded-full w-7 h-7"
@@ -120,7 +119,7 @@ export default function ListTask({
                     </div>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell className="w-[300px]">
                 {/* SHow Low/Medium/High */}
                 <Badge
                     className="w-fit rounded-none text-xs"
