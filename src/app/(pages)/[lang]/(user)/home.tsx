@@ -372,7 +372,11 @@ export default function HomePage({}: Props) {
         })
 
         return (
-            <div className="w-full flex flex-col gap-y-3">
+            <div
+                ref={setNodeRef}
+                style={style}
+                className="w-full flex flex-col gap-y-3"
+            >
                 <div className="flex mb-3 justify-between">
                     <div className="gap-x-3 flex items-center">
                         <div className={`rounded-full w-2 h-2 ${dotColor}`} />
@@ -821,10 +825,7 @@ export default function HomePage({}: Props) {
                         {createPortal(
                             <DragOverlay>
                                 {activeTask && (
-                                    <Task
-                                        className="-rotate-12"
-                                        task={activeTask}
-                                    />
+                                    <Task className="" task={activeTask} />
                                 )}
                             </DragOverlay>,
                             document.body // Need to change the target container to only content page
