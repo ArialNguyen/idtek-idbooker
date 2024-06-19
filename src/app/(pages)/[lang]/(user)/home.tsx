@@ -29,7 +29,16 @@ import {
 import useTaskTab from '@/hooks/useTaskTab'
 import AddAndUpdateTask from '@/components/custom/add-update-task'
 import { v4 } from 'uuid'
-
+import ListTask from '@/components/custom/ListTask'
+import {
+    Table,
+    TableBody,
+    TableCaption,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow
+} from '@/components/ui/table'
 type Props = {}
 
 interface ItemProps {
@@ -282,6 +291,7 @@ export default function HomePage({}: Props) {
                 style={style}
                 className="w-full flex flex-col gap-y-3"
             >
+                {/* da copy */}
                 <div className="flex mb-3 justify-between">
                     <div className="gap-x-3 flex items-center">
                         <div className={`rounded-full w-2 h-2 ${dotColor}`} />
@@ -306,6 +316,8 @@ export default function HomePage({}: Props) {
                         <BsThreeDots className="cursor-pointer" />
                     </div>
                 </div>
+
+                {/* chua copy */}
                 <SortableContext items={taskIds}>
                     {tasksInCol.map((task, index) => (
                         <Task
@@ -339,6 +351,103 @@ export default function HomePage({}: Props) {
                 >
                     <IoMdAdd color="blue" className="w-5" />
                     <p>Add New Task</p>
+                </div>
+            </div>
+        )
+    }
+
+    const ListView = ({ column, style, tasksInCol }: TaskColumnProps) => {
+        const { dotColor, textColor, bgTextColor } = style
+
+        const taskIds = useMemo(() => {
+            return tasksInCol.map((task) => task.id)
+        }, [tasksInCol])
+
+        const { setNodeRef } = useSortable({
+            id: column.id,
+            data: {
+                type: 'Column',
+                column
+            }
+        })
+
+        return (
+            <div className="w-full flex flex-col gap-y-3">
+                <div className="flex mb-3 justify-between">
+                    <div className="gap-x-3 flex items-center">
+                        <div className={`rounded-full w-2 h-2 ${dotColor}`} />
+                        {/* My Task/ Todo/ In Progress / Done */}
+                        <b className="ml-[-5px] text-xs">{column.title}</b>
+                        <span
+                            className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}
+                        >
+                            10
+                        </span>
+                    </div>
+                    {/* Nút thêm task bên phải */}
+                    <div className="flex gap-x-2 items-center">
+                        <span
+                            onClick={() => {
+                                if (taskTab == 'AddNew') return closeTaskTab()
+                                setaddTaskColumnClicked(column.id as string)
+                                openTaskTab('AddNew')
+                            }}
+                            className="p-1 cursor-pointer rounded-full bg-white"
+                        >
+                            <IoMdAdd color="blue" />
+                        </span>
+                        <BsThreeDots className="cursor-pointer" />
+                    </div>
+                </div>
+
+                {/* Show list task - quan trong - chinh cai này */}
+                <SortableContext items={taskIds}>
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead>Task name</TableHead>
+                                <TableHead>Due Date</TableHead>
+                                <TableHead>Priority</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {tasksInCol.map((task, index) => (
+                                <ListTask
+                                    className="hover:bg-slate-50"
+                                    onDeleteClick={() => {
+                                        const tasksTmp = [...tasks]
+                                        tasksTmp.splice(
+                                            tasksTmp.findIndex(
+                                                (t) => t.id == task.id
+                                            ),
+                                            1
+                                        )
+                                        setTasks(tasksTmp)
+                                    }}
+                                    onDetailClick={() => {
+                                        if (taskTab == 'Update')
+                                            return closeTaskTab()
+                                        setTaskClicked(task)
+                                        openTaskTab('Update')
+                                    }}
+                                    key={index}
+                                    task={task}
+                                />
+                            ))}
+                        </TableBody>
+                    </Table>
+                </SortableContext>
+
+                <div
+                    onClick={() => {
+                        if (taskTab == 'AddNew') return closeTaskTab()
+                        setaddTaskColumnClicked(column.id as string)
+                        openTaskTab('AddNew')
+                    }}
+                    className="flex justify-center items-center gap-x-2 text-xs text-blue-500 cursor-pointer p-2 bg-white rounded-md font-semibold hover:bg-sky-100"
+                >
+                    <IoMdAdd color="blue" className="w-5" />
+                    {t('column.user.addTask')}
                 </div>
             </div>
         )
@@ -688,13 +797,13 @@ export default function HomePage({}: Props) {
                     // <p>Write List VIew here</p>
                     <DndContext
                         sensors={sensors}
-                        onDragStart={onDragStart} //khi di chuyển vẫn hiện
+                        onDragStart={onDragStart}
                         onDragEnd={onDragEnd}
-                        onDragOver={onDragOver} //để có thể chèn vào chỗ muốn chèn (cái này k có là cook)
+                        onDragOver={onDragOver}
                     >
                         <SortableContext items={columnsId}>
                             {columns.map((col, index) => (
-                                <TaskRow
+                                <ListView
                                     key={index}
                                     style={TaskColumnColors.find(
                                         (color) => color.columnId == col.id
@@ -706,10 +815,9 @@ export default function HomePage({}: Props) {
                                         handleUpdateTasksInColumn
                                     }
                                     column={col}
-                                />
+                                ></ListView>
                             ))}
                         </SortableContext>
-
                         {createPortal(
                             <DragOverlay>
                                 {activeTask && (
@@ -831,6 +939,17 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'Default',
+        createdAt: '01 Jan, 2023'
+    },
+    {
+        id: '6',
+        title: 'Task 5',
+        level: 'High',
+        userCreated: {
+            userId: 'Hưng nguyễn',
+            image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
+        },
+        status: 'Done',
         createdAt: '01 Jan, 2023'
     }
 ]
