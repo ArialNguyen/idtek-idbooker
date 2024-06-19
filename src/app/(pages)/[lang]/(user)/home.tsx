@@ -6,13 +6,16 @@ import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import { useSession } from 'next-auth/react'
 import { useTranslations } from 'next-intl'
-import React, { ReactNode, useMemo, useState } from 'react'
+import React, { ReactNode, useCallback, useMemo, useState } from 'react'
 import { IoMdAdd } from 'react-icons/io'
 import { BsThreeDots } from 'react-icons/bs'
 import { Button } from '@/components/ui/button'
 import { BsViewList } from 'react-icons/bs'
 import { MdOutlineViewKanban } from 'react-icons/md'
 import { GiSettingsKnobs } from 'react-icons/gi'
+import { RiFontSize } from 'react-icons/ri'
+import { FaCalendarAlt } from 'react-icons/fa'
+import { MdOutlineArrowDropDownCircle } from 'react-icons/md'
 import { TaskType } from '@/types/task'
 import { Column, ColumnId } from '@/types/column'
 import { SortableContext, arrayMove, useSortable } from '@dnd-kit/sortable'
@@ -39,6 +42,15 @@ import {
     TableHeader,
     TableRow
 } from '@/components/ui/table'
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuLabel,
+    DropdownMenuSeparator,
+    DropdownMenuTrigger
+} from '@/components/ui/dropdown-menu'
+
 type Props = {}
 
 interface ItemProps {
@@ -57,6 +69,12 @@ interface TaskColumnProps {
 interface CriteriaProps {
     view: 'kanban' | 'list'
 }
+
+type Data = typeof tasksData
+
+type SortKeys = keyof Data[0]
+
+type SortOrder = 'asc' | 'desc' | 'none'
 
 export default function HomePage({}: Props) {
     const t = useTranslations()
@@ -80,6 +98,78 @@ export default function HomePage({}: Props) {
     const [addTaskColumnClicked, setaddTaskColumnClicked] = useState<
         ColumnId | undefined
     >(undefined)
+
+    const [selectedItem, setSelectedItem] = useState('Sort')
+    const items = ['Sort', 'Task name', 'Due Date', 'Priority']
+
+    // sorting
+    const [sortKey, setSortKey] = useState<SortKeys>('title')
+    const [sortOrder, setSortOrder] = useState<SortOrder>('asc')
+
+    const headers: { key: SortKeys; label: string }[] = [
+        { key: 'title', label: 'Task name' },
+        { key: 'createdAt', label: 'Due Date' },
+        { key: 'level', label: 'Priority' }
+    ]
+
+    const sortData = ({
+        tableData,
+        sortKey,
+        reverse
+    }: {
+        tableData: Data
+        sortKey: SortKeys
+        reverse: boolean
+    }) => {
+        // alert('haha')
+        if (!sortKey) return tableData
+
+        const sorted = tasks.slice()
+        if (sortKey === 'createdAt') {
+            sorted?.sort((a, b) => {
+                const dateA = new Date(a.createdAt)
+                const dateB = new Date(b.createdAt)
+                return dateB.getTime() - dateA.getTime()
+            })
+        }
+
+        if (sortKey === 'title') {
+            // Desc
+            sorted?.sort((a, b) => {
+                return a[sortKey] > b[sortKey] ? 1 : -1
+            })
+        }
+
+        if (sortKey == 'level') {
+            const priorityOrder: { [key: string]: number } = {
+                High: 1,
+                Medium: 2,
+                Low: 3
+            }
+
+            sorted?.sort((x, y) => {
+                return priorityOrder[x.level] - priorityOrder[y.level]
+            })
+        }
+
+        if (reverse && sortOrder === 'asc') {
+            sorted?.reverse()
+        }
+
+        setTasks(sorted)
+        setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+
+        setSelectedItem(
+            headers[headers.findIndex((header) => header.key === sortKey)].label
+        )
+
+        // changeSort(sortKey)
+    }
+
+    // function changeSort(key: SortKeys) {
+    //     setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')
+    //     setSortKey(key)
+    // }
 
     const columnsId = useMemo(() => {
         return columns.map((col) => col.id)
@@ -270,92 +360,6 @@ export default function HomePage({}: Props) {
         )
     }
 
-    const TaskRow = ({ column, style, tasksInCol }: TaskColumnProps) => {
-        const { dotColor, textColor, bgTextColor } = style
-
-        const taskIds = useMemo(() => {
-            return tasksInCol.map((task) => task.id)
-        }, [tasksInCol])
-
-        const { setNodeRef } = useSortable({
-            id: column.id,
-            data: {
-                type: 'Column',
-                column
-            }
-        })
-
-        return (
-            <div
-                ref={setNodeRef}
-                style={style}
-                className="w-full flex flex-col gap-y-3"
-            >
-                {/* da copy */}
-                <div className="flex mb-3 justify-between">
-                    <div className="gap-x-3 flex items-center">
-                        <div className={`rounded-full w-2 h-2 ${dotColor}`} />
-                        <b className="ml-[-5px] text-xs">{column.title}</b>
-                        <span
-                            className={`text-xs ${textColor} ${bgTextColor} pl-1 pr-1 font-semibold`}
-                        >
-                            10
-                        </span>
-                    </div>
-                    <div className="flex gap-x-2 items-center">
-                        <span
-                            onClick={() => {
-                                if (taskTab == 'AddNew') return closeTaskTab()
-                                setaddTaskColumnClicked(column.id as string)
-                                openTaskTab('AddNew')
-                            }}
-                            className="p-1 cursor-pointer rounded-full bg-white"
-                        >
-                            <IoMdAdd color="blue" />
-                        </span>
-                        <BsThreeDots className="cursor-pointer" />
-                    </div>
-                </div>
-
-                {/* chua copy */}
-                <SortableContext items={taskIds}>
-                    {tasksInCol.map((task, index) => (
-                        <Task
-                            className="hover:bg-slate-50"
-                            onDeleteClick={() => {
-                                const tasksTmp = [...tasks]
-                                tasksTmp.splice(
-                                    tasksTmp.findIndex((t) => t.id == task.id),
-                                    1
-                                )
-                                setTasks(tasksTmp)
-                            }}
-                            onDetailClick={() => {
-                                if (taskTab == 'Update') return closeTaskTab()
-                                setTaskClicked(task)
-                                openTaskTab('Update')
-                            }}
-                            key={index}
-                            task={task}
-                        />
-                    ))}
-                </SortableContext>
-
-                <div
-                    onClick={() => {
-                        if (taskTab == 'AddNew') return closeTaskTab()
-                        setaddTaskColumnClicked(column.id as string)
-                        openTaskTab('AddNew')
-                    }}
-                    className="flex justify-center items-center gap-x-2 text-xs text-blue-500 cursor-pointer p-2 bg-white rounded-md font-semibold hover:bg-sky-100"
-                >
-                    <IoMdAdd color="blue" className="w-5" />
-                    <p>Add New Task</p>
-                </div>
-            </div>
-        )
-    }
-
     const ListView = ({ column, style, tasksInCol }: TaskColumnProps) => {
         const { dotColor, textColor, bgTextColor } = style
 
@@ -377,7 +381,7 @@ export default function HomePage({}: Props) {
                 style={style}
                 className="w-full flex flex-col gap-y-3"
             >
-                <div className="flex mb-3 justify-between">
+                <div className="flex justify-between">
                     <div className="gap-x-3 flex items-center">
                         <div className={`rounded-full w-2 h-2 ${dotColor}`} />
                         {/* My Task/ Todo/ In Progress / Done */}
@@ -409,9 +413,30 @@ export default function HomePage({}: Props) {
                     <Table>
                         <TableHeader>
                             <TableRow>
-                                <TableHead>Task name</TableHead>
-                                <TableHead>Due Date</TableHead>
-                                <TableHead>Priority</TableHead>
+                                {headers.map((row) => {
+                                    return (
+                                        <TableHead key={row.key}>
+                                            {row.key === 'title' && (
+                                                <div className="flex items-center gap-x-2">
+                                                    <RiFontSize />
+                                                    {row.label}
+                                                </div>
+                                            )}
+                                            {row.key === 'createdAt' && (
+                                                <div className="flex items-center gap-x-2">
+                                                    <FaCalendarAlt />
+                                                    {row.label}
+                                                </div>
+                                            )}
+                                            {row.key === 'level' && (
+                                                <div className="flex items-center gap-x-2">
+                                                    <MdOutlineArrowDropDownCircle />
+                                                    {row.label}
+                                                </div>
+                                            )}
+                                        </TableHead>
+                                    )
+                                })}
                             </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -453,6 +478,7 @@ export default function HomePage({}: Props) {
                     <IoMdAdd color="blue" className="w-5" />
                     {t('column.user.addTask')}
                 </div>
+                <hr className="h-px mb-8 bg-gray-400 border-0 dark:bg-gray-700" />
             </div>
         )
     }
@@ -715,16 +741,62 @@ export default function HomePage({}: Props) {
                                 KanBan View
                             </span>
                         </Button>
-                        <Button
-                            size={'xs'}
-                            variant="white"
-                            className="border-2 border-solid	border-gray-200"
-                        >
-                            <GiSettingsKnobs className="w-6" />
-                            <span className="text-slate-500 font-semibold text-xs">
-                                Filters
-                            </span>
-                        </Button>
+                        <DropdownMenu>
+                            <DropdownMenuTrigger>
+                                <Button
+                                    size={'xs'}
+                                    variant="white"
+                                    className="border-2 border-solid	border-gray-200"
+                                >
+                                    <GiSettingsKnobs className="w-6" />
+                                    <span className="text-slate-500 font-semibold text-xs">
+                                        {selectedItem}
+                                    </span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent>
+                                <DropdownMenuLabel>
+                                    Sort by...
+                                </DropdownMenuLabel>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        sortData({
+                                            tableData: tasks,
+                                            sortKey: 'title',
+                                            reverse: true
+                                        })
+                                    }
+                                >
+                                    <RiFontSize className="mr-2" />
+                                    {items[1]}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        sortData({
+                                            tableData: tasks,
+                                            sortKey: 'createdAt',
+                                            reverse: true
+                                        })
+                                    }
+                                >
+                                    <FaCalendarAlt className="mr-2" />
+                                    {items[2]}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() =>
+                                        sortData({
+                                            tableData: tasks,
+                                            sortKey: 'level',
+                                            reverse: true
+                                        })
+                                    }
+                                >
+                                    <MdOutlineArrowDropDownCircle className="mr-2" />
+                                    {items[3]}
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
                     </div>
                 </div>
             </div>
@@ -752,6 +824,7 @@ export default function HomePage({}: Props) {
                     tasksTmp[tasksTmp.findIndex((t) => t.id == task.id)] = {
                         ...task
                     }
+                    setTasks(tasksTmp)
                     closeTaskTab()
                 }}
             />
@@ -825,7 +898,7 @@ export default function HomePage({}: Props) {
                         {createPortal(
                             <DragOverlay>
                                 {activeTask && (
-                                    <Task className="" task={activeTask} />
+                                    <ListTask className="" task={activeTask} />
                                 )}
                             </DragOverlay>,
                             document.body // Need to change the target container to only content page
@@ -896,7 +969,7 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'Default',
-        createdAt: '01 Jan, 2023'
+        createdAt: '07 Jan, 2024'
     },
     {
         id: '2',
@@ -907,7 +980,7 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'ToDo',
-        createdAt: '01 Jan, 2023'
+        createdAt: '01 Jan, 2021'
     },
     {
         id: '3',
@@ -918,18 +991,18 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'InProgress',
-        createdAt: '01 Jan, 2023'
+        createdAt: '01 Jan, 2022'
     },
     {
         id: '4',
-        title: 'Task 4',
+        title: 'Task 6',
         level: 'Medium',
         userCreated: {
             userId: 'Hưng nguyễn',
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'Default',
-        createdAt: '01 Jan, 2023'
+        createdAt: '05 Jan, 2023'
     },
     {
         id: '5',
@@ -940,7 +1013,7 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'Default',
-        createdAt: '01 Jan, 2023'
+        createdAt: '06 Jan, 2020'
     },
     {
         id: '6',
@@ -951,6 +1024,6 @@ const tasksData: TaskType[] = [
             image: 'https://avatars.githubusercontent.com/u/87338733?v=4'
         },
         status: 'Done',
-        createdAt: '01 Jan, 2023'
+        createdAt: '01 Jan, 2025'
     }
 ]

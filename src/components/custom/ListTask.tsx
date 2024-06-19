@@ -13,7 +13,6 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { DataTable } from '@/components/ui/data-table'
 import {
     Table,
     TableBody,
@@ -86,19 +85,18 @@ export default function ListTask({
         >
             <TableCell className="flex">
                 {/* Show Task name */}
-                {isHover && (
-                    <BsTrash
-                        onClick={onDeleteClick}
-                        className="w-4 h-4 hover:text-red-500 hover:cursor-pointer mr-2"
-                    />
-                )}
-                {isHover && (
-                    <HiInformationCircle
-                        onClick={onDetailClick}
-                        className="w-4 h-4 hover:text-blue-400 hover:cursor-pointer mr-2"
-                    />
-                )}
-                <div className="flex justify-between">
+
+                <BsTrash
+                    onClick={onDeleteClick}
+                    className="w-4 h-4 hover:text-red-500 hover:cursor-pointer mr-2"
+                />
+
+                <HiInformationCircle
+                    onClick={onDetailClick}
+                    className="w-4 h-4 hover:text-blue-400 hover:cursor-pointer mr-2"
+                />
+
+                <div>
                     <div className="items-center font-semibold flex gap-x-1">
                         <FaRegSquareCheck color="gray" />
                         {task.title}
@@ -120,7 +118,7 @@ export default function ListTask({
                     </div>
                 </div>
             </TableCell>
-            <TableCell>
+            <TableCell className="w-[300px]">
                 {/* SHow Low/Medium/High */}
                 <Badge
                     className="w-fit rounded-none text-xs"
