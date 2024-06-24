@@ -1,5 +1,6 @@
 'use client'
 import { logoutAction } from '@/actions/authActions'
+import { ModeToggle } from '@/components/ModeToggle'
 import LanguageSelector from '@/components/custom/LanguageSelector'
 import Modal from '@/components/custom/modal/Modal'
 import Dropdown from '@/components/ui/Dropdown'
@@ -29,24 +30,20 @@ export default function Header({ }: Props) {
     }
     return (
         <div className='h-[100%] w-[82%]'>
-            <div className='border-solid border-2 p-1 pb-0.5 flex justify-center items-center'>
+            <div className='border-solid border-0 flex justify-center items-center '>
                 <div className='w-8/12 '>
-                    <div className='w-4/12 gap-x-1 p-1 bg-white border-solid border-2 border-stone-200 rounded-lg flex justify-center items-center'>
+                    <div className='w-4/12 bg-white dark:bg-slate-400 border-solid border-2 border-stone-200 rounded-lg flex justify-center items-center'>
                         <div className='basis-1/5 flex justify-end p-0.5 items-end text-white rounded-full '>
-                            <svg className="w-3 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                            <svg className="w-3 text-gray-500 dark:text-gray-100" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
                             </svg>
                         </div>
-                        <input type="search" className="text-xs w-full outline-none" placeholder="Search" />
+                        <input type="search" className="text-xs w-full outline-none bg-white dark:bg-slate-400" placeholder="Search" />
                     </div>
                 </div>
                 <div className='w-4/12 flex justify-end	items-center'>
                     <div className='w-2/12 '>
-                        <div className={`w-8 bg-sky-500 flex justify-center items-center text-white border-2 p-2 rounded-full hover:drop-shadow-2xl`}>
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" className="w-full h-full text-gray-500 dark:text-gray-400">
-                                <path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z" />
-                            </svg>
-                        </div>
+                    <ModeToggle></ModeToggle>
                     </div>
                     <div className='w-2/12 '>
                         <LanguageSelector />
@@ -76,7 +73,6 @@ export default function Header({ }: Props) {
                                 </div>{' '}
                             </Dropdown.Item>
                         </Dropdown>
-
                     </div>
                     <div className='w-4/12 -ml-3 mr-4 truncate'>
                         <h1 className='font-extrabold'>

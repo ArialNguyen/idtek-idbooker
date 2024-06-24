@@ -10,6 +10,8 @@ import { Toaster } from 'sonner'
 import Header from '@/components/custom/header/Header'
 import { MdTask } from 'react-icons/md'
 import UserSidebar from '@/components/custom/sidebar/user-sidebar'
+import { ThemeProvider } from "@/components/custom/ThemeProvider";
+import { ModeToggle } from "@/components/ModeToggle";
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -35,6 +37,12 @@ export default async function RootLayout({
                         locale={params.lang}
                     >
                         <body className={inter.className}>
+                                  <ThemeProvider
+                      attribute="class"
+                      defaultTheme="system"
+                      enableSystem
+                      disableTransitionOnChange
+                      >
                             <div className="flex h-[50px]">
                                 <div className="flex w-[18%] items-center justify-center gap-x-3 border-2 border-r-0 h-[100%] border-slate-200">
                                     <div className="bg-blue-600 p-2 rounded">
@@ -58,6 +66,7 @@ export default async function RootLayout({
                                 </div>
                                 <div className="w-[100%]">{children}</div>
                             </div>
+                            </ThemeProvider>
                         </body>
                         <Toaster />
                     </NextIntlClientProvider>

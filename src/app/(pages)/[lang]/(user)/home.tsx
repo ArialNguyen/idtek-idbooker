@@ -325,8 +325,8 @@ export default function HomePage({}: Props) {
                 <SortableContext items={taskIds}>
                     {tasksInCol.map((task, index) => (
                         <Task
-                            className="hover:bg-slate-50"
-                            onDeleteClick={() => {
+                        className='hover:bg-slate-50 dark:bg-slate-500  dark:md:hover:bg-gray-400'
+                        onDeleteClick={() => {
                                 const tasksTmp = [...tasks]
                                 tasksTmp.splice(
                                     tasksTmp.findIndex((t) => t.id == task.id),
@@ -485,7 +485,7 @@ export default function HomePage({}: Props) {
 
     return (
         <div className="flex flex-col">
-            <div className="p-4 pt-1 pb-0 border-2 border-solid border-t-0 bg-white text-xs gap-y-2">
+            <div className="p-4 pt-1 pb-0 border-2 border-solid border-t-0 text-xs gap-y-2">
                 <div className="flex my-2">
                     <div className="w-7/12  flex items-center">
                         <span className="text-neutral-500	text-sm	">
@@ -830,7 +830,7 @@ export default function HomePage({}: Props) {
             />
             <div
                 id="content"
-                className="bg-gray-100 min-h-screen flex flex-wrap p-3 gap-x-5"
+                className="bg-gray-100 dark:bg-slate-800 min-h-screen flex flex-wrap p-3 gap-x-5"
             >
                 {tabSelected == 'task' && criteria.view == 'kanban' && (
                     <DndContext
@@ -913,9 +913,7 @@ export default function HomePage({}: Props) {
 function Item({ title, bgColor, number }: ItemProps) {
     return (
         <div
-            className={cn(
-                `w-full h-full gap-x-2 flex items-center justify-center bg-white border-2 border-white border-b-blue-500	text-blue-500`
-            )}
+        className={cn(`w-full h-full gap-x-2 flex items-center justify-center border-0 border-b-2 border-b-blue-500 text-blue-500`)}
         >
             <div className="font-semibold">{title}</div>
             <div className={`${bgColor} p-0.5 text-white text-xs rounded`}>

@@ -22,8 +22,8 @@ function Tabs({ children }: React.HTMLAttributes<HTMLDivElement>): JSX.Element {
         setActiveTab,
       }}
     >
-      <div className="flex flex-wrap -mb-px text-center border-b border-gray-200 dark:border-gray-700">
-        {children}
+      <div className="flex flex-wrap -mb-px text-center border-b border-yellow-200 dark:border-gray-700">
+      {children}
       </div>
     </TabsContext.Provider>
   );

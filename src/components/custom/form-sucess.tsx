@@ -15,4 +15,4 @@ export default function FormSuccess({
         <p>{message}</p>
     </div>
   )
-}
+} 

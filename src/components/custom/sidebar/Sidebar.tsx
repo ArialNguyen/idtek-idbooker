@@ -36,12 +36,12 @@ interface SidebarCollapseProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const theme = {
   sidebar: {
-    base: ' h-full pt-0 pl-0 bg-white transition-all',
+    base: ' h-full pt-0 pl-0 transition-all',
     icon: {
       base: 'w-5 h-5',
       collapse: {
         on: 'text-blue-600',
-        off: 'mr-4 text-slate-500',
+        off: 'mr-4',
       },
     },
     collapse: {
@@ -69,7 +69,7 @@ const theme = {
     active: {
       // on: 'bg-emerald-400 text-white',
       on: 'border-4 border-transparent border-l-indigo-500 text-blue-600',
-      off: 'text-slate-900',
+      off: 'text-white-100',
     },
     itemCollapse: 'pl-5',
   },

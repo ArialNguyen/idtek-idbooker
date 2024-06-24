@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { IoTimeOutline } from "react-icons/io5";
-import { TbCircleDashed } from "react-icons/tb";
+import { TbBackground, TbCircleDashed } from "react-icons/tb";
 import Dropdown from '@/components/ui/Dropdown';
 import { TiArrowForwardOutline } from "react-icons/ti";
 import { useTranslations } from 'next-intl';
@@ -87,9 +87,9 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
         } as TaskType)
     }
     return (
-        <div className={`h-[calc(100vh+20px)] bg-white absolute top-0 right-0 transition-all duration-[1500ms] ease-linear overflow-hidden
-          ${show ? 'w-6/12 opacity-1 shadow-xl' : 'w-[20px] opacity-0'}`
-        } >
+        <div className={`h-[calc(100vh+20px)] bg-white dark:bg-slate-800 absolute top-0 right-0 transition-all duration-[200ms] ease-linear overflow-hidden
+            ${show ? 'w-6/12  shadow-xl ' : 'w-[20px] '}`
+          } >
             <div className={`w-full ${show ? ' opacity-1 p-4' : 'opacity-0'} flex justify-between items-center `}>
                 <TiArrowForwardOutline className='hover:cursor-pointer w-4 h-4' onClick={onCloseTab} />
                 <Badge onClick={handleDone} className='bg-green-600 hover:bg-green-400 text-white hover:cursor-pointer'>Done</Badge>
@@ -101,7 +101,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     <div>
                         <img src='https://www.notion.so/icons/clipping_lightgray.svg?mode=light' className='w-[36px] h-[36px]' />
                     </div>
-                    <input className="text-2xl	font-bold outline-none" value={criteria.title} onChange={(event) => {
+                    <input className="text-2xl font-bold outline-none bg-inherit text-current"  value={criteria.title} onChange={(event) => {
                         setCriteria({ ...criteria, title: event.target.value })
                     }} name='Task' placeholder={t('add-update-task.user.titled')} />
                 </div>
@@ -189,7 +189,7 @@ export default function AddAndUpdateTask({ action, show = false, task, columnId,
                     <div className={`w-8 bg-slate-200 flex justify-center items-center text-white border-2 rounded-full hover:drop-shadow-2xl`}>
                         <img className='rounded-full' src={session.data?.user.image || "https://upload.wikimedia.org/wikipedia/commons/thumb/1/12/User_icon_2.svg/2048px-User_icon_2.svg.png"} alt="" />
                     </div>
-                    <input className="outline-none" placeholder={t('add-update-task.user.comment')} />
+                    <input className="outline-none bg-transparent " placeholder={t('add-update-task.user.comment')} />
                 </div>
             </div>
         </div>
