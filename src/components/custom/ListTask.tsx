@@ -13,7 +13,6 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { cn } from '@/lib/utils'
 import { useState } from 'react'
-import { DataTable } from '@/components/ui/data-table'
 import {
     Table,
     TableBody,
